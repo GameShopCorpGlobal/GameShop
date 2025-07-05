@@ -1,0 +1,31 @@
+[versions]
+agp = "8.11.0"
+junit = "4.13.2"
+junitVersion = "1.2.1"
+espressoCore = "3.6.1"
+appcompat = "1.7.1"
+material = "1.10.0"
+activity = "1.8.0"
+constraintlayout = "2.1.4"
+
+jme3Core = "3.8.0-stable"
+multidex = "1.0.3"
+
+[libraries]
+jme3-android-native = { module = "org.jmonkeyengine:jme3-android-native", version.ref = "jme3Core" }
+jme3-core = { module = "org.jmonkeyengine:jme3-core", version.ref = "jme3Core" }
+jme3-effects = { module = "org.jmonkeyengine:jme3-effects", version.ref = "jme3Core" }
+jme3-niftygui = {module = "org.jmonkeyengine:jme3-niftygui", version.ref = "jme3Core"}
+multidex = { module = "com.android.support:multidex", version.ref = "multidex" }
+
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
+constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+
