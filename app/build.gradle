@@ -23,6 +23,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+//            configurations.all {
+//                exclude group: "com.google.guava", module: "listenablefuture"
+//            }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
@@ -40,6 +44,9 @@ dependencies {
     //noinspection GradleDependency
     implementation libs.jme3.android.native
 
+//    implementation libs.lemur
+//    implementation libs.groovy.all
+//    implementation libs.guava
     //niftygui
     implementation libs.jme3.niftygui
 

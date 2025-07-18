@@ -32,12 +32,12 @@ public class Base {
 
 
 
-        SuperSquare sTop = new SuperSquare("top", atmsTop, new Node("top"), numPoints, new Vector3f(0,1,0), new Vector3f(1,1,0),new Vector3f(0,1,1),new Vector3f(1,1,1));
-        SuperSquare sBottom = new SuperSquare("bottom", atmsBottom, new Node("bottom"), numPoints, new Vector3f(0,0,0), new Vector3f(1,0,0),new Vector3f(0,0,1),new Vector3f(1,0,1));
-        SuperSquare sFront = new SuperSquare("front", atmsFront, new Node("front"), numPoints, new Vector3f(0,0,1), new Vector3f(1,0,1),new Vector3f(0,1,1),new Vector3f(1,1,1));
-        SuperSquare sBack = new SuperSquare("back", atmsBack, new Node("back"), numPoints, new Vector3f(0,0,0), new Vector3f(1,0,0),new Vector3f(0,1,0),new Vector3f(1,1,0));
-        SuperSquare sLeft = new SuperSquare("left", atmsLeft, new Node("left"), numPoints, new Vector3f(0,0,0), new Vector3f(0,0,1),new Vector3f(0,1,0),new Vector3f(0,1,1));
-        SuperSquare sRight = new SuperSquare("right", atmsRight, new Node("right"), numPoints, new Vector3f(1,0,0), new Vector3f(1,0,1),new Vector3f(1,1,0),new Vector3f(1,1,1));
+        SuperSquare sTop = new SuperSquare("top", atmsTop, new Node("top"), numPoints, new Vector3f(0,1,0), new Vector3f(1,1,0),new Vector3f(0,1,1),new Vector3f(1,1,1), null);
+        SuperSquare sBottom = new SuperSquare("bottom", atmsBottom, new Node("bottom"), numPoints, new Vector3f(0,0,0), new Vector3f(1,0,0),new Vector3f(0,0,1),new Vector3f(1,0,1), null);
+        SuperSquare sFront = new SuperSquare("front", atmsFront, new Node("front"), numPoints, new Vector3f(0,0,1), new Vector3f(1,0,1),new Vector3f(0,1,1),new Vector3f(1,1,1), null);
+        SuperSquare sBack = new SuperSquare("back", atmsBack, new Node("back"), numPoints, new Vector3f(0,0,0), new Vector3f(1,0,0),new Vector3f(0,1,0),new Vector3f(1,1,0), null);
+        SuperSquare sLeft = new SuperSquare("left", atmsLeft, new Node("left"), numPoints, new Vector3f(0,0,0), new Vector3f(0,0,1),new Vector3f(0,1,0),new Vector3f(0,1,1), null);
+        SuperSquare sRight = new SuperSquare("right", atmsRight, new Node("right"), numPoints, new Vector3f(1,0,0), new Vector3f(1,0,1),new Vector3f(1,1,0),new Vector3f(1,1,1), null);
 
         SuperCube superCube = new SuperCube(sTop, sBottom, sFront, sBack, sLeft, sRight);
 

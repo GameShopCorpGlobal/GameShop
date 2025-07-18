@@ -1,6 +1,7 @@
 package com.gameshopcorp.gameshop.graphics;
 
 import com.jme3.texture.Image;
+import com.jme3.texture.Texture2D;
 import com.jme3.texture.image.ColorSpace;
 
 import java.nio.ByteBuffer;
@@ -23,6 +24,10 @@ public class ATMS {
 
     public Image makeATMS(){
 
+//        if (texture2D != null){
+//
+//            return texture2D.getImage();
+//        }
         ArrayList<ByteBuffer> pixels = new ArrayList<>();
         ByteBuffer pixel = ByteBuffer.wrap(layer.outputLayer());
         pixels.add(pixel);

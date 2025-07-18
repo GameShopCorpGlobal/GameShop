@@ -14,7 +14,7 @@ import de.lessvoid.nifty.screen.ScreenController;
  * "Interfaces/Nifty/HelloJme.xml", which is used in the TestAppStates and
  * TestNiftyGui applications.
  */
-public class StartScreenController implements ScreenController {
+public class MyScreenController implements ScreenController {
 
     final private SimpleApplication application;
 
@@ -23,7 +23,7 @@ public class StartScreenController implements ScreenController {
      *
      * @param app the Application
      */
-    public StartScreenController(SimpleApplication app) {
+    public MyScreenController(SimpleApplication app) {
         this.application = app;
     }
 

@@ -24,14 +24,16 @@ public class SuperSurface {
     //Texture2D texture;
     public Node node;
 
-    public SuperSurface(SuperLine[] currencyLines, ATMS atms, Node node){
+    public Texture2D texture2D;
+
+    public SuperSurface(SuperLine[] currencyLines, ATMS atms, Node node, Texture2D texture2D){
 
         //this.app = app;
         this.currencyLines = currencyLines;
         //this.texture = texture;
         this.atms = atms;
         this.node = node;
-
+        this.texture2D = texture2D;
         setDimensions();
         setImageArray();
         drawSimpleMeshes();
@@ -41,6 +43,16 @@ public class SuperSurface {
 //    public void updateTexture(Texture2D texture){
 //        this.texture = texture;
 //    }
+
+
+    public Texture2D getTexture2D() {
+        if (texture2D == null){
+
+            return new Texture2D(atms.makeATMS());
+        }
+        return texture2D;
+    }
+
     public SimpleMesh getMeshFromValue(int x, int y){
 
         return  simpleMeshes[(this.vInfinitesimals[0].infinitesimals.length * x) + y];
@@ -79,10 +91,18 @@ public class SuperSurface {
 
                 Vector3f[] simpleMesh = new Vector3f[4];
 
-                simpleMesh[0] = this.vInfinitesimals[y].infinitesimals[x];
-                simpleMesh[1] = this.vInfinitesimals[y + 1].infinitesimals[x];
-                simpleMesh[2] = this.vInfinitesimals[y].infinitesimals[x + 1];
-                simpleMesh[3] = this.vInfinitesimals[y + 1].infinitesimals[x + 1];
+                //if (texture2D == null) {
+                    simpleMesh[0] = this.vInfinitesimals[y].infinitesimals[x];
+                    simpleMesh[1] = this.vInfinitesimals[y + 1].infinitesimals[x];
+                    simpleMesh[2] = this.vInfinitesimals[y].infinitesimals[x + 1];
+                    simpleMesh[3] = this.vInfinitesimals[y + 1].infinitesimals[x + 1];
+               // }
+//                else {
+//                    simpleMesh[2] = this.vInfinitesimals[y].infinitesimals[x];
+//                    simpleMesh[1] = this.vInfinitesimals[y + 1].infinitesimals[x];
+//                    simpleMesh[0] = this.vInfinitesimals[y].infinitesimals[x + 1];
+//                    simpleMesh[3] = this.vInfinitesimals[y + 1].infinitesimals[x + 1];
+//                }
                 Vector2f[] texCoord = new Vector2f[4];
 
 //                Vector2f distance = new Vector2f(((this.vInfinitesimals[maxY].infinitesimals[maxX].x) - (this.vInfinitesimals[0].infinitesimals[0].x)), ((this.vInfinitesimals[maxY].infinitesimals[maxX].y) - (this.vInfinitesimals[0].infinitesimals[0].y)));
@@ -93,11 +113,19 @@ public class SuperSurface {
 //                texCoord[2] = new Vector2f( new Vector2f(((this.vInfinitesimals[y].infinitesimals[x + 1].x) - base.x) / distance.x,(this.vInfinitesimals[y].infinitesimals[x + 1].y - base.y)/distance.y));//new Vector2f(0,1);
 //                texCoord[3] = new Vector2f( new Vector2f(((this.vInfinitesimals[y + 1].infinitesimals[x + 1].x) - base.x)/distance.x,(this.vInfinitesimals[y + 1].infinitesimals[x + 1].y - base.y)/distance.y));//new Vector2f(1,1);
 
-                texCoord[0] = new Vector2f((float) x /maxX, (float) y /maxY);
-                texCoord[1] = new Vector2f((float) x /maxX, (float) (y + 1) /maxY);
-                texCoord[2] = new Vector2f((float) (x + 1) /maxX, (float) y /maxY);
-                texCoord[3] = new Vector2f((float) (x + 1) /maxX, (float) (y + 1) /maxY);
-
+               // if (texture2D == null) {
+                    texCoord[0] = new Vector2f((float) x / maxX, (float) y / maxY);
+                    texCoord[1] = new Vector2f((float) x / maxX, (float) (y + 1) / maxY);
+                    texCoord[2] = new Vector2f((float) (x + 1) / maxX, (float) y / maxY);
+                    texCoord[3] = new Vector2f((float) (x + 1) / maxX, (float) (y + 1) / maxY);
+                //}
+//                else {
+//                    texCoord[2] = new Vector2f((float) x / maxX, (float) (y + 1) / maxY);
+//                    texCoord[1] = new Vector2f((float) (x + 1) / maxX, (float) y / maxY);
+//                    texCoord[0] = new Vector2f((float) (x + 1) / maxX, (float) (y + 1) / maxY);
+//                    texCoord[3] = new Vector2f((float) x / maxX, (float) y / maxY);
+//
+//                }
                 simpleMeshes[(this.vInfinitesimals[0].infinitesimals.length * y) + x].texCoord = texCoord;
                 simpleMeshes[(this.vInfinitesimals[0].infinitesimals.length * y) + x].vertices = simpleMesh;
 
@@ -107,7 +135,7 @@ public class SuperSurface {
 
                 simpleMeshes[(this.vInfinitesimals[0].infinitesimals.length * y) + x].m.updateBound();
 
-                simpleMeshes[(this.vInfinitesimals[0].infinitesimals.length * y) + x].mat.setTexture("ColorMap", new Texture2D(atms.makeATMS()));
+                simpleMeshes[(this.vInfinitesimals[0].infinitesimals.length * y) + x].mat.setTexture("ColorMap", getTexture2D());
                 simpleMeshes[(this.vInfinitesimals[0].infinitesimals.length * y) + x].geom.setMaterial(simpleMeshes[(this.vInfinitesimals[0].infinitesimals.length * y) + x].mat);
 
                 //simpleMeshes[(this.vInfinitesimals[0].infinitesimals.length * y) + x].geom.updateModelBound();
@@ -152,11 +180,17 @@ public class SuperSurface {
 
                 Vector3f[] simpleMesh = new Vector3f[4];
 
-                simpleMesh[0] = this.vInfinitesimals[y].infinitesimals[x];
-                simpleMesh[1] = this.vInfinitesimals[y + 1].infinitesimals[x];
-                simpleMesh[2] = this.vInfinitesimals[y].infinitesimals[x + 1];
-                simpleMesh[3] = this.vInfinitesimals[y + 1].infinitesimals[x + 1];
-
+               // if (texture2D == null) {
+                    simpleMesh[0] = this.vInfinitesimals[y].infinitesimals[x];
+                    simpleMesh[1] = this.vInfinitesimals[y + 1].infinitesimals[x];
+                    simpleMesh[2] = this.vInfinitesimals[y].infinitesimals[x + 1];
+                    simpleMesh[3] = this.vInfinitesimals[y + 1].infinitesimals[x + 1];
+//                } else {
+//                    simpleMesh[2] = this.vInfinitesimals[y].infinitesimals[x];
+//                    simpleMesh[1] = this.vInfinitesimals[y + 1].infinitesimals[x];
+//                    simpleMesh[0] = this.vInfinitesimals[y].infinitesimals[x + 1];
+//                    simpleMesh[3] = this.vInfinitesimals[y + 1].infinitesimals[x + 1];
+//                }
 //                simpleMesh[0] = this.vInfinitesimals[y + 1].infinitesimals[x];
 //                simpleMesh[1] = this.vInfinitesimals[y].infinitesimals[x];
 //                simpleMesh[2] = this.vInfinitesimals[y].infinitesimals[x + 1];
@@ -177,12 +211,19 @@ public class SuperSurface {
                 texCoord[3] = new Vector2f( new Vector2f(((this.vInfinitesimals[y + 1].infinitesimals[x + 1].x) - base.x)/distance.x,(this.vInfinitesimals[y + 1].infinitesimals[x + 1].y - base.y)/distance.y));//new Vector2f(1,1);
 
                 */
-                texCoord[0] = new Vector2f((float) x /maxX, (float) y /maxY);
-                texCoord[1] = new Vector2f((float) x /maxX, (float) (y + 1) /maxY);
-                texCoord[2] = new Vector2f((float) (x + 1) /maxX, (float) y /maxY);
-                texCoord[3] = new Vector2f((float) (x + 1) /maxX, (float) (y + 1) /maxY);
-
-                simpleMeshes[(this.vInfinitesimals[0].infinitesimals.length * y) + x] = new SimpleMesh(simpleMesh, texCoord, new Texture2D(atms.makeATMS()), node);
+                //if (texture2D == null) {
+                    texCoord[0] = new Vector2f((float) x / maxX, (float) y / maxY);
+                    texCoord[1] = new Vector2f((float) x / maxX, (float) (y + 1) / maxY);
+                    texCoord[2] = new Vector2f((float) (x + 1) / maxX, (float) y / maxY);
+                    texCoord[3] = new Vector2f((float) (x + 1) / maxX, (float) (y + 1) / maxY);
+//                } else {
+//                    texCoord[2] = new Vector2f((float) x / maxX, (float) (y + 1) / maxY);
+//                    texCoord[1] = new Vector2f((float) (x + 1) / maxX, (float) y / maxY);
+//                    texCoord[0] = new Vector2f((float) (x + 1) / maxX, (float) (y + 1) / maxY);
+//                    texCoord[3] = new Vector2f((float) x / maxX, (float) y / maxY);
+//
+//                }
+                simpleMeshes[(this.vInfinitesimals[0].infinitesimals.length * y) + x] = new SimpleMesh(simpleMesh, texCoord, getTexture2D(), node);
 
             }
         }
