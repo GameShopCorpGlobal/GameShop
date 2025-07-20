@@ -34,10 +34,11 @@ public final class MyGame extends SimpleApplication {
 
         flyCam.setEnabled(true);
 
+
         getViewPort().setBackgroundColor(ColorRGBA.White);
 
-        ATMS atms = new ATMS("Rune", 256, 256);
-
+        ATMS atms = new ATMS("GreyBox", 256, 256);
+        atms.layer.drawCircle(128,128,256, new Vector4f(128,128,128,255));
         Texture2D tex = (Texture2D) assetManager.loadTexture("Textures/Rune.jpeg");
 
 
