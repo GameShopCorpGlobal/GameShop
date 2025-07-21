@@ -16,6 +16,10 @@ public class SuperSurface {
     public float width;
     public float height;
 
+    public float maxX;
+
+    public float maxY;
+
     public float dim;
 
     //SimpleApplication app;
@@ -86,6 +90,10 @@ public class SuperSurface {
 
         int maxX = this.vInfinitesimals[0].infinitesimals.length - 1;
         int maxY = this.vInfinitesimals.length - 1;
+
+        this.maxX = maxX;
+        this.maxY = maxY;
+
         for (int y = 0; y < maxY; y++){
             for (int x = 0; x < maxX; x++){
 
@@ -175,6 +183,10 @@ public class SuperSurface {
     public void drawSimpleMeshes(){
         int maxX = this.vInfinitesimals[0].infinitesimals.length - 1;
         int maxY = this.vInfinitesimals.length - 1;
+
+        this.maxX = maxX;
+        this.maxY = maxY;
+
         for (int y = 0; y < maxY; y++){
             for (int x = 0; x < maxX; x++){
 
