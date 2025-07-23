@@ -3,6 +3,9 @@ package com.gameshopcorp.gameshop;
 import com.gameshopcorp.gameshop.app.App;
 import com.gameshopcorp.gameshop.app.AppSuperMesh;
 import com.gameshopcorp.gameshop.character.basic.Player;
+import com.gameshopcorp.gameshop.gameshopui.Alphabet;
+import com.gameshopcorp.gameshop.gameshopui.Omni;
+import com.gameshopcorp.gameshop.gameshopui.Screen;
 import com.gameshopcorp.gameshop.gameshopui.SimpleMeshUI;
 import com.gameshopcorp.gameshop.gameshopui.SuperSquareUI;
 import com.gameshopcorp.gameshop.graphics.ATMS;
@@ -27,14 +30,16 @@ import com.jme3.texture.Image;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture2D;
 import com.jme3.renderer.Camera;
+import com.jme3.ui.Picture;
 
 import de.lessvoid.nifty.Nifty;
 
 public final class MyGame extends SimpleApplication {
 
 
-    private Nifty nifty;
-
+    public Nifty nifty;
+    public NiftyJmeDisplay niftyDisplay;
+    public Screen uiScreen;
 
     @Override
     public void simpleInitApp() {
@@ -47,28 +52,28 @@ public final class MyGame extends SimpleApplication {
         getViewPort().setBackgroundColor(ColorRGBA.White);
 
         ATMS atms = new ATMS("BlueBox", 256, 256);
-        atms.layer.drawCircle(128,128,64, new Vector4f(0,0,255,255));
-        Texture2D tex = null;//(Texture2D) assetManager.loadTexture("Textures/Rune.jpeg");
+        atms.layer.drawCircle(128,128,256, new Vector4f(0,0,255,128));
+        Texture2D tex = (Texture2D) assetManager.loadTexture("Textures/Rune.jpeg");
 
 
-        SuperSquare top = new SuperSquare("Display", atms, new Node("UI"), 7, new Vector3f(-3,3,-3), new Vector3f(3,3,-3), new Vector3f(-3,3,3), new Vector3f(3,3,3), tex );
+        SuperSquare top = new SuperSquare("Display", atms, new Node("UI"), 7, new Vector3f(-3,3,-3), new Vector3f(3,3,-3), new Vector3f(-3,3,3), new Vector3f(3,3,3), null );
 
-        SuperSquare bottom = new SuperSquare("Display", atms, new Node("UI"), 7, new Vector3f(-3,-3,-3), new Vector3f(3,-3,-3), new Vector3f(-3,-3,3), new Vector3f(3,-3,3), tex );
+        SuperSquare bottom = new SuperSquare("Display", atms, new Node("UI"), 7, new Vector3f(-3,-3,-3), new Vector3f(3,-3,-3), new Vector3f(-3,-3,3), new Vector3f(3,-3,3), null );
 
-        SuperSquare front = new SuperSquare("Display", atms, new Node("UI"), 7, new Vector3f(-3,-3,3), new Vector3f(3,-3,3), new Vector3f(-3,3,3), new Vector3f(3,3,3), tex );
+        SuperSquare front = new SuperSquare("Display", atms, new Node("UI"), 7, new Vector3f(-3,-3,3), new Vector3f(3,-3,3), new Vector3f(-3,3,3), new Vector3f(3,3,3), null );
 
-        SuperSquare back = new SuperSquare("Display", atms, new Node("UI"), 7, new Vector3f(-3,-3,-3), new Vector3f(3,-3,-3), new Vector3f(-3,3,-3), new Vector3f(3,3,-3), tex );
+        SuperSquare back = new SuperSquare("Display", atms, new Node("UI"), 7, new Vector3f(-3,-3,-3), new Vector3f(3,-3,-3), new Vector3f(-3,3,-3), new Vector3f(3,3,-3), null );
 
-        SuperSquare left = new SuperSquare("Display", atms, new Node("UI"), 7, new Vector3f(-3,-3,-3), new Vector3f(-3,-3,3), new Vector3f(-3,3,-3), new Vector3f(-3,3,3), tex );
+        SuperSquare left = new SuperSquare("Display", atms, new Node("UI"), 7, new Vector3f(-3,-3,-3), new Vector3f(-3,-3,3), new Vector3f(-3,3,-3), new Vector3f(-3,3,3), null );
 
-        SuperSquare right = new SuperSquare("Display", atms, new Node("UI"), 7, new Vector3f(3,-3,-3), new Vector3f(3,-3,3), new Vector3f(3,3,-3), new Vector3f(3,3,3), tex );
+        SuperSquare right = new SuperSquare("Display", atms, new Node("UI"), 7, new Vector3f(3,-3,-3), new Vector3f(3,-3,3), new Vector3f(3,3,-3), new Vector3f(3,3,3), null );
 
         SuperCube superCube = new SuperCube(top, bottom, front, back, left, right);
 
         AppSuperMesh.getInstance().superMeshes.put("SuperCube", superCube.superMesh);
 
-//        Node uiNode = new Node("UI Node");
-//        SuperSquareUI ui = new SuperSquareUI("UI", atms, uiNode, 2, new Vector3f(-1,-1,0), new Vector3f(1,-1,0), new Vector3f(-1,1,0), new Vector3f(1,1,0), tex );
+        //Node uiNode = new Node("UI Node");
+      //  SuperSquare ui = new SuperSquare("UI", atms, uiNode, 2, new Vector3f(-1,-1,0), new Vector3f(1,-1,0), new Vector3f(-1,1,0), new Vector3f(1,1,0), tex );
 //
 //        SimpleMeshUI smUI = new SimpleMeshUI(new Vector3f[]{
 //                new Vector3f(-1,-1,0),
@@ -82,27 +87,49 @@ public final class MyGame extends SimpleApplication {
 //                        new Vector2f(-1,1),
 //                        new Vector2f(1,-1),
 //                        new Vector2f(1,1)
-//                }, tex, uiNode);
+//                }, new Texture2D(atms.makeATMS()), uiNode);
 
-//        rootNode.attachChild(uiNode);
+//        Picture pic = new Picture("UI");
+//        pic.setTexture(assetManager, tex, true);
+//        pic.setWidth(settings.getWidth());
+//        pic.setHeight(settings.getHeight());
+//        pic.setPosition(0, 0);
+//        guiNode.attachChild(pic);
 
+       // Alphabet alphabet = new Alphabet('A');
+       // alphabet.parser();
+
+        ATMS atmsButton = new ATMS("ATMSButton", 100,100);
+        atmsButton.layer.drawCircle(50,50,100,new Vector4f(20,20,20,200));
+        uiScreen = new Screen();
+        Omni omni = new Omni("Hello GameShop", atmsButton, new Vector2f(), new Vector2f(250, 100)){
+
+            @Override
+            public void onClick() {
+                super.onClick();
+                System.out.println("OMNI CLICKED");
+            }
+        };
+
+        uiScreen.omnis.add(omni);
+        uiScreen.draw();
         //Player player = new Player();
 
         //ViewPort niftyView = renderManager.createPreView("NiftyView", new Camera(1024, 768));
 
-        /*
-        NiftyJmeDisplay niftyDisplay = NiftyJmeDisplay.newNiftyJmeDisplay(
-                assetManager,
-                inputManager,
-                audioRenderer,
-                guiViewPort);
-        nifty = niftyDisplay.getNifty();
-        MyScreenController startScreen = new MyScreenController(this);
-        nifty.fromXml("Interface/Nifty/HelloGameShop.xml", "start", startScreen);
-//
-        this.guiViewPort.addProcessor(niftyDisplay);
 
-         */
+//         niftyDisplay = NiftyJmeDisplay.newNiftyJmeDisplay(
+//                assetManager,
+//                inputManager,
+//                audioRenderer,
+//                guiViewPort);
+//        nifty = niftyDisplay.getNifty();
+//        MyScreenController startScreen = new MyScreenController(this);
+//        nifty.fromXml("Interface/Nifty/HelloGameShop.xml", "start", startScreen);
+////
+//        this.guiViewPort.addProcessor(niftyDisplay);
+
+
 
 //        /** Prepare a framebuffer for the texture niftytex */
 //        niftyView.addProcessor(niftyDisplay);

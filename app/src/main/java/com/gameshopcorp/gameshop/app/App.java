@@ -1,10 +1,11 @@
 package com.gameshopcorp.gameshop.app;
 
+import com.gameshopcorp.gameshop.MyGame;
 import com.jme3.app.SimpleApplication;
 
 public class App {
 
-    public SimpleApplication app;
+    public MyGame app;
     private static App _instance;
 
     private App(){

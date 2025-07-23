@@ -3,9 +3,11 @@ package com.gameshopcorp.gameshop.niftygui;
  *
  * @author gameshopengine
  */
+import com.gameshopcorp.gameshop.app.App;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import de.lessvoid.nifty.Nifty;
+import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
 
@@ -18,6 +20,8 @@ public class MyScreenController implements ScreenController {
 
     final private SimpleApplication application;
 
+    public Screen screen;
+    public Nifty nifty;
     /**
      * Instantiate a ScreenController for the specified Application.
      *
@@ -37,6 +41,8 @@ public class MyScreenController implements ScreenController {
     @Override
     public void bind(Nifty nifty, Screen screen) {
         System.out.println("bind(" + screen.getScreenId() + ")");
+        this.nifty = nifty;
+        this.screen = screen;
     }
 
     /**
@@ -62,5 +68,16 @@ public class MyScreenController implements ScreenController {
     public void quit() {
         System.out.println("Quit");
         application.stop();
+    }
+
+    public void focus(){
+
+        System.out.println("removed");
+        //App.getInstance().app.getGuiViewPort().removeProcessor(App.getInstance().app.niftyDisplay);
+//        Element myElement = screen.findElementById("panel-empty");
+//        if (myElement != null) {
+//            myElement.setFocus();
+//        }
+
     }
 }

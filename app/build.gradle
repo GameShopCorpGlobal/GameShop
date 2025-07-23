@@ -35,6 +35,10 @@ android {
 
 dependencies {
 
+    // https://mvnrepository.com/artifact/org.apache.pdfbox/fontbox
+   // implementation(libs.fontbox)
+   // implementation libs.jme3.freetype.font
+//    implementation "org.lwjgl:lwjgl-freetype::natives-windows:3.3.2"
     //multidex
     implementation libs.multidex
     /*add the JMonkeyEngine Dependencies*/

@@ -15,8 +15,8 @@ void main(){
     //by the position vector.
     //The multiplication must be done in this order.
     texCoord = inTexCoord;
-    gl_Position =  vec4((inPosition.x) / 3.0, (inPosition.y) / 7.0 , 0.0, 1.0);
-//    gl_Position =  vec4((inPosition.x), (inPosition.y) , 0.0, 1.0);
+    //gl_Position =  vec4((inPosition.x) / 3.0, (inPosition.y) / 7.0 , 0.0, 1.0);
+    gl_Position =  vec4((inPosition.x), (inPosition.y) , 0.0, 1.0);
     //gl_Position =  vec4((inPosition.x) - 1.0, (inPosition.y) - 1.0 , 0.0, 1.0);
 
 }

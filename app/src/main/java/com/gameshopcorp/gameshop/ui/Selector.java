@@ -8,12 +8,15 @@ import com.gameshopcorp.gameshop.graphics.SuperMesh;
 import com.gameshopcorp.gameshop.graphics.SuperSurface;
 import com.gameshopcorp.gameshop.supermesh.SuperCube;
 import com.gameshopcorp.gameshop.supermesh.SuperSquare;
+import com.jme3.collision.CollisionResults;
 import com.jme3.input.TouchInput;
 import com.jme3.input.controls.TouchListener;
 import com.jme3.input.controls.TouchTrigger;
 import com.jme3.input.event.TouchEvent;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Ray;
+import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.math.Vector4f;
 import com.jme3.scene.Geometry;
@@ -33,6 +36,7 @@ public class Selector implements TouchListener {
     //public String selected = "NONE";// NONE, SUPERMESH, SUPERSURFACE, SUPERLINE, VECTOR3F
 
     public ArrayList<Geometry> selectors;
+    public Geometry selected;
 
     public Node selectorNode;
     public Selector(){
@@ -46,28 +50,28 @@ public class Selector implements TouchListener {
 
     }
 
-    public SuperCube genSuperCube(){
-
-        ATMS atms = new ATMS("Selector", 256, 256);
-        atms.layer.drawCircle(128,128,256, new Vector4f(255,0,0,128));
-
-        SuperSquare top = new SuperSquare("Display", atms, new Node("UI"), 2, new Vector3f(-3,3,-3), new Vector3f(3,3,-3), new Vector3f(-3,3,3), new Vector3f(3,3,3), null );
-
-        SuperSquare bottom = new SuperSquare("Display", atms, new Node("UI"), 2, new Vector3f(-3,-3,-3), new Vector3f(3,-3,-3), new Vector3f(-3,-3,3), new Vector3f(3,-3,3), null );
-
-        SuperSquare front = new SuperSquare("Display", atms, new Node("UI"), 2, new Vector3f(-3,-3,3), new Vector3f(3,-3,3), new Vector3f(-3,3,3), new Vector3f(3,3,3), null );
-        //front.node.scale(-1,1,1);
-        SuperSquare back = new SuperSquare("Display", atms, new Node("UI"), 2, new Vector3f(-3,-3,-3), new Vector3f(3,-3,-3), new Vector3f(-3,3,-3), new Vector3f(3,3,-3), null );
-
-        SuperSquare left = new SuperSquare("Display", atms, new Node("UI"), 2, new Vector3f(-3,-3,-3), new Vector3f(-3,-3,3), new Vector3f(-3,3,-3), new Vector3f(-3,3,3), null );
-
-        SuperSquare right = new SuperSquare("Display", atms, new Node("UI"), 2, new Vector3f(3,-3,-3), new Vector3f(3,-3,3), new Vector3f(3,3,-3), new Vector3f(3,3,3), null );
-
-        SuperCube superCube = new SuperCube(top, bottom, front, back, left, right);
-
-        superCube.superMesh.node.scale(.33f);
-        return superCube;
-    }
+//    public SuperCube genSuperCube(){
+//
+//        ATMS atms = new ATMS("Selector", 256, 256);
+//        atms.layer.drawCircle(128,128,256, new Vector4f(255,0,0,128));
+//
+//        SuperSquare top = new SuperSquare("Display", atms, new Node("UI"), 2, new Vector3f(-3,3,-3), new Vector3f(3,3,-3), new Vector3f(-3,3,3), new Vector3f(3,3,3), null );
+//
+//        SuperSquare bottom = new SuperSquare("Display", atms, new Node("UI"), 2, new Vector3f(-3,-3,-3), new Vector3f(3,-3,-3), new Vector3f(-3,-3,3), new Vector3f(3,-3,3), null );
+//
+//        SuperSquare front = new SuperSquare("Display", atms, new Node("UI"), 2, new Vector3f(-3,-3,3), new Vector3f(3,-3,3), new Vector3f(-3,3,3), new Vector3f(3,3,3), null );
+//        //front.node.scale(-1,1,1);
+//        SuperSquare back = new SuperSquare("Display", atms, new Node("UI"), 2, new Vector3f(-3,-3,-3), new Vector3f(3,-3,-3), new Vector3f(-3,3,-3), new Vector3f(3,3,-3), null );
+//
+//        SuperSquare left = new SuperSquare("Display", atms, new Node("UI"), 2, new Vector3f(-3,-3,-3), new Vector3f(-3,-3,3), new Vector3f(-3,3,-3), new Vector3f(-3,3,3), null );
+//
+//        SuperSquare right = new SuperSquare("Display", atms, new Node("UI"), 2, new Vector3f(3,-3,-3), new Vector3f(3,-3,3), new Vector3f(3,3,-3), new Vector3f(3,3,3), null );
+//
+//        SuperCube superCube = new SuperCube(top, bottom, front, back, left, right);
+//
+//        superCube.superMesh.node.scale(.33f);
+//        return superCube;
+//    }
     public void populateSelectors(){
 
 
@@ -88,7 +92,21 @@ public class Selector implements TouchListener {
                             geom.setMaterial(mat);
                             geom.setLocalTranslation(v);
 
-                            App.getInstance().app.getRootNode().attachChild(geom);
+                            boolean added = false;
+                            for (Geometry g: selectors){
+
+                                if (g.getLocalTranslation().equals(v)){
+                                    added = true;
+                                    break;
+                                }
+                            }
+
+
+                            if (!added) {
+                                App.getInstance().app.getRootNode().attachChild(geom);
+                                selectors.add(geom);
+                            }
+
                            // SuperCube superCube = genSuperCube();
                            // superCube.superMesh.node.setLocalTranslation(new Vector3f(v));
                            // selectors.add(superCube);
@@ -98,7 +116,7 @@ public class Selector implements TouchListener {
                 }
 
             }
-
+            //System.out.println("Selectors Size: " + selectors.size());
 
 
     }
@@ -143,6 +161,39 @@ public class Selector implements TouchListener {
                     break;
                 case TAP:
 
+                    // Reset results list.
+                    CollisionResults results = new CollisionResults();
+                    // Convert screen click to 3d position
+                    Vector2f click2d = App.getInstance().app.getInputManager().getCursorPosition();
+                    App.getInstance().app.uiScreen.click(click2d);
+
+                    Vector3f click3d = App.getInstance().app.getCamera().getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 0f).clone();
+                    Vector3f dir = App.getInstance().app.getCamera().getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 1f).subtractLocal(click3d).normalizeLocal();
+                    // Aim the ray from the clicked spot forwards.
+                    Ray ray = new Ray(click3d, dir);
+                    // Collect intersections between ray and all nodes in results list.
+                    App.getInstance().app.getRootNode().collideWith(ray, results);
+                    // (Print the results so we see what is going on:)
+                    for (int i = 0; i < results.size(); i++) {
+                        // (For each "hit", we know distance, impact point, geometry.)
+                        float dist = results.getCollision(i).getDistance();
+                        Vector3f pt = results.getCollision(i).getContactPoint();
+                        String target = results.getCollision(i).getGeometry().getName();
+                        System.out.println("Selection #" + i + ": " + target + " at " + pt + ", " + dist + " WU away.");
+                    }
+                    // Use the results -- we rotate the selected geometry.
+                    if (results.size() > 0) {
+                        // The closest result is the target that the player picked:
+                        Geometry target = results.getClosestCollision().getGeometry();
+                        // Here comes the action:
+                        if (target.getName().contains("Box")) {
+                            selected = target;
+                            Material mat = new Material(App.getInstance().app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+                            mat.setColor("Color", ColorRGBA.Blue);
+                            selected.setMaterial(mat);
+                            //target.rotate(0, -5f, 0);
+                        }
+                    }
 
                     // Handle a tap gesture
                     System.out.println("Tap detected at: " + event.getX() + ", " + event.getY());

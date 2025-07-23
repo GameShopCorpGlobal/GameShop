@@ -2,7 +2,7 @@
 <nifty>
     <useStyles filename="nifty-default-styles.xml" />
     <useControls filename="nifty-default-controls.xml" />
-    <screen id="start" controller="com.gameshopcorp.gameshop.niftygui.StartScreenController">
+    <screen id="start" controller="com.gameshopcorp.gameshop.niftygui.MyScreenController">
         <layer id="layer" backgroundColor="#0000" childLayout="vertical">
 <!--            <panel id="panel" height="25%" width="35%" align="center" valign="center" backgroundColor="#f60f" childLayout="center" visibleToMouse="true">-->
 <!--                <interact onClick="quit()"/>-->
@@ -15,8 +15,8 @@
 <!--            </panel>-->
             <!-- simple default console control that displays 25 lines. please note: event notification requires an id -->
             <panel id="panel-empty" height="75%" width="100%" align="center" valign="center" backgroundColor="#f600" childLayout="horizontal" visibleToMouse="true">-->
-
-<!--                <control id="console" name="nifty-console" lines="25" align="center" valign="bottom" />-->
+                    <interact onClick="focus()" />
+<!--                     <control id="console" name="nifty-console" lines="25" align="center" valign="bottom" />&ndash;&gt;-->
             </panel>
             <panel id="panel-console" height="25%" width="100%" align="center" valign="center" backgroundColor="#f00a" childLayout="horizontal" visibleToMouse="true">-->
 
