@@ -1,18 +1,26 @@
 package com.gameshopcorp.gameshop;
 
 import com.gameshopcorp.gameshop.app.App;
+import com.gameshopcorp.gameshop.app.AppSuperMesh;
 import com.gameshopcorp.gameshop.character.basic.Player;
+import com.gameshopcorp.gameshop.gameshopui.SimpleMeshUI;
+import com.gameshopcorp.gameshop.gameshopui.SuperSquareUI;
 import com.gameshopcorp.gameshop.graphics.ATMS;
 import com.gameshopcorp.gameshop.niftygui.MyScreenController;
 import com.gameshopcorp.gameshop.niftygui.MyScreenController;
 import com.gameshopcorp.gameshop.supermesh.SuperCube;
 import com.gameshopcorp.gameshop.supermesh.SuperSquare;
+import com.gameshopcorp.gameshop.ui.Selector;
 import com.jme3.app.SimpleApplication;
+import com.jme3.asset.TextureKey;
+import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.math.Vector4f;
 import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.renderer.ViewPort;
+import com.jme3.scene.CameraNode;
 import com.jme3.scene.Node;
 import com.jme3.texture.FrameBuffer;
 import com.jme3.texture.Image;
@@ -30,16 +38,17 @@ public final class MyGame extends SimpleApplication {
 
     @Override
     public void simpleInitApp() {
+        this.setDisplayFps(false);
+        this.setDisplayStatView(false);
         App.getInstance().app = this;
 
         flyCam.setEnabled(true);
 
-
         getViewPort().setBackgroundColor(ColorRGBA.White);
 
-        ATMS atms = new ATMS("GreyBox", 256, 256);
-        atms.layer.drawCircle(128,128,256, new Vector4f(128,128,128,255));
-        Texture2D tex = (Texture2D) assetManager.loadTexture("Textures/Rune.jpeg");
+        ATMS atms = new ATMS("BlueBox", 256, 256);
+        atms.layer.drawCircle(128,128,64, new Vector4f(0,0,255,255));
+        Texture2D tex = null;//(Texture2D) assetManager.loadTexture("Textures/Rune.jpeg");
 
 
         SuperSquare top = new SuperSquare("Display", atms, new Node("UI"), 7, new Vector3f(-3,3,-3), new Vector3f(3,3,-3), new Vector3f(-3,3,3), new Vector3f(3,3,3), tex );
@@ -47,7 +56,7 @@ public final class MyGame extends SimpleApplication {
         SuperSquare bottom = new SuperSquare("Display", atms, new Node("UI"), 7, new Vector3f(-3,-3,-3), new Vector3f(3,-3,-3), new Vector3f(-3,-3,3), new Vector3f(3,-3,3), tex );
 
         SuperSquare front = new SuperSquare("Display", atms, new Node("UI"), 7, new Vector3f(-3,-3,3), new Vector3f(3,-3,3), new Vector3f(-3,3,3), new Vector3f(3,3,3), tex );
-        //front.node.scale(-1,1,1);
+
         SuperSquare back = new SuperSquare("Display", atms, new Node("UI"), 7, new Vector3f(-3,-3,-3), new Vector3f(3,-3,-3), new Vector3f(-3,3,-3), new Vector3f(3,3,-3), tex );
 
         SuperSquare left = new SuperSquare("Display", atms, new Node("UI"), 7, new Vector3f(-3,-3,-3), new Vector3f(-3,-3,3), new Vector3f(-3,3,-3), new Vector3f(-3,3,3), tex );
@@ -56,21 +65,45 @@ public final class MyGame extends SimpleApplication {
 
         SuperCube superCube = new SuperCube(top, bottom, front, back, left, right);
 
+        AppSuperMesh.getInstance().superMeshes.put("SuperCube", superCube.superMesh);
+
+//        Node uiNode = new Node("UI Node");
+//        SuperSquareUI ui = new SuperSquareUI("UI", atms, uiNode, 2, new Vector3f(-1,-1,0), new Vector3f(1,-1,0), new Vector3f(-1,1,0), new Vector3f(1,1,0), tex );
+//
+//        SimpleMeshUI smUI = new SimpleMeshUI(new Vector3f[]{
+//                new Vector3f(-1,-1,0),
+//                new Vector3f(-1,1,0),
+//                new Vector3f(1,-1,0),
+//                new Vector3f(1,1,0)
+//
+//        },
+//                new Vector2f[]{
+//                        new Vector2f(-1,-1),
+//                        new Vector2f(-1,1),
+//                        new Vector2f(1,-1),
+//                        new Vector2f(1,1)
+//                }, tex, uiNode);
+
+//        rootNode.attachChild(uiNode);
 
         //Player player = new Player();
 
         //ViewPort niftyView = renderManager.createPreView("NiftyView", new Camera(1024, 768));
 
-//        NiftyJmeDisplay niftyDisplay = NiftyJmeDisplay.newNiftyJmeDisplay(
-//                assetManager,
-//                inputManager,
-//                audioRenderer,
-//                guiViewPort);
-//        nifty = niftyDisplay.getNifty();
-//        MyScreenController startScreen = new MyScreenController(this);
-//        nifty.fromXml("Interface/Nifty/HelloGameShop.xml", "start", startScreen);
+        /*
+        NiftyJmeDisplay niftyDisplay = NiftyJmeDisplay.newNiftyJmeDisplay(
+                assetManager,
+                inputManager,
+                audioRenderer,
+                guiViewPort);
+        nifty = niftyDisplay.getNifty();
+        MyScreenController startScreen = new MyScreenController(this);
+        nifty.fromXml("Interface/Nifty/HelloGameShop.xml", "start", startScreen);
 //
-//        this.guiViewPort.addProcessor(niftyDisplay);
+        this.guiViewPort.addProcessor(niftyDisplay);
+
+         */
+
 //        /** Prepare a framebuffer for the texture niftytex */
 //        niftyView.addProcessor(niftyDisplay);
 //        Texture2D depthTex = new Texture2D(1024, 768, Image.Format.Depth);
@@ -98,6 +131,8 @@ public final class MyGame extends SimpleApplication {
 //        this.rootNode.attachChild(superSquare.node);
 
 
+        Selector selector = new Selector();
+        selector.populateSelectors();
         // disable the fly cam
       //  flyCam.setEnabled(false);
         //flyCam.setDragToRotate(true);

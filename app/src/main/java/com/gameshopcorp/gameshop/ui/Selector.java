@@ -12,6 +12,8 @@ import com.jme3.input.TouchInput;
 import com.jme3.input.controls.TouchListener;
 import com.jme3.input.controls.TouchTrigger;
 import com.jme3.input.event.TouchEvent;
+import com.jme3.material.Material;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.math.Vector4f;
 import com.jme3.scene.Geometry;
@@ -19,17 +21,18 @@ import com.jme3.scene.Node;
 import com.jme3.scene.shape.Box;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Selector implements TouchListener {
 
-    public Vector3f selectedVector;
-    public SuperLine selectedSuperLine;
-    public SuperSurface selectedSuperSurface;
-    public SuperMesh selectedSuperMesh;
+//    public Vector3f selectedVector;
+//    public SuperLine selectedSuperLine;
+//    public SuperSurface selectedSuperSurface;
+//    public SuperMesh selectedSuperMesh;
 
-    public String selected = "NONE";// NONE, SUPERMESH, SUPERSURFACE, SUPERLINE, VECTOR3F
+    //public String selected = "NONE";// NONE, SUPERMESH, SUPERSURFACE, SUPERLINE, VECTOR3F
 
-    public ArrayList<SuperCube> selectors;
+    public ArrayList<Geometry> selectors;
 
     public Node selectorNode;
     public Selector(){
@@ -67,29 +70,36 @@ public class Selector implements TouchListener {
     }
     public void populateSelectors(){
 
-        if (selected.equals("NONE")){
 
 
+            for (SuperMesh s: AppSuperMesh.getInstance().superMeshes.values()){
 
-        } else if (selected.equals("SUPERMESH")){
+                for (SuperSurface ss: s.superMesh.values()){
 
-            for (SuperSurface s: selectedSuperMesh.superMesh.values()){
+                    for (SuperLine sl: ss.currencyLines){
 
-                SuperCube superCube = genSuperCube();
-                superCube.superMesh.node.setLocalTranslation(new Vector3f(s.getMeshFromValue((int) (s.maxX/2), (int) (s.maxY/2)).vertices[0]));
-                selectors.add(superCube);
+                        for (Vector3f v: sl.points){
+
+                            Box b = new Box(.1f, .1f, .1f);
+                            Geometry geom = new Geometry("Box" + s + ss + sl + v, b);
+
+                            Material mat = new Material(App.getInstance().app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+                            mat.setColor("Color", ColorRGBA.Red);
+                            geom.setMaterial(mat);
+                            geom.setLocalTranslation(v);
+
+                            App.getInstance().app.getRootNode().attachChild(geom);
+                           // SuperCube superCube = genSuperCube();
+                           // superCube.superMesh.node.setLocalTranslation(new Vector3f(v));
+                           // selectors.add(superCube);
+
+                        }
+                    }
+                }
+
             }
 
-        } else if (selected.equals("SUPERSURFACE")){
 
-
-        } else if (selected.equals("SUPERLINE")){
-
-
-        } else if (selected.equals("VECTOR3F")){
-
-
-        }
 
     }
 

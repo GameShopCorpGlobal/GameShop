@@ -29,7 +29,8 @@ public class ATMS {
 //            return texture2D.getImage();
 //        }
         ArrayList<ByteBuffer> pixels = new ArrayList<>();
-        ByteBuffer pixel = ByteBuffer.wrap(layer.outputLayer());
+        ByteBuffer pixel = ByteBuffer.allocateDirect(width * height *4);
+        pixel.put(layer.outputLayer());
         pixels.add(pixel);
         return new Image(Image.Format.RGBA8, width, height, 8, pixels, ColorSpace.Linear);
     }

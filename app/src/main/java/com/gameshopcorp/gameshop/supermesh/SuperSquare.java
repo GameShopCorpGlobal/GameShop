@@ -16,6 +16,8 @@ public class SuperSquare {
 
     public ATMS atms;
     public String name;
+
+    public  SuperSurface superSurface;
     public SuperSquare(String name, ATMS atms, Node node, int numPoints, Vector3f bottomLeft, Vector3f bottomRight, Vector3f topLeft, Vector3f topRight, Texture2D texture2D){
 
         this.atms = atms;
@@ -51,7 +53,7 @@ public class SuperSquare {
         SuperLine c = new SuperLine(new Vector3f[]{c0,c1,c2,c3}, numPoints);
         SuperLine d = new SuperLine(new Vector3f[]{d0,d1,d2,d3}, numPoints);
 
-        SuperSurface superSurface = new SuperSurface(new SuperLine[]{a, b, c, d}, this.atms, this.node, texture2D);
+        superSurface = new SuperSurface(new SuperLine[]{a, b, c, d}, this.atms, this.node, texture2D);
         superMesh = new SuperMesh(new String[]{name}, new SuperSurface[]{superSurface});
     }
 }
