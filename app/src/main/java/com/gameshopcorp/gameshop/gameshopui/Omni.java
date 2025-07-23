@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class Omni {
 
-    public ArrayList<Omni> omnis;
+    //public ArrayList<Omni> omnis;
     public ATMS atms;
     public Vector2f start;
     public Vector2f end;
@@ -22,7 +22,7 @@ public class Omni {
 
         this.text = text;
         this.atms = atms;
-        this.omnis = new ArrayList<>();
+        //this.omnis = new ArrayList<>();
         this.start = start;
         this.end = end;
         this.pic = new Picture("Omni");
@@ -37,7 +37,7 @@ public class Omni {
         pic.setTexture(App.getInstance().app.getAssetManager(), new Texture2D(atms.makeATMS()), true);
         App.getInstance().app.getGuiNode().attachChild(pic);
         drawText();
-
+       // drawContainer();
     }
 
     public void drawText(){
@@ -46,13 +46,33 @@ public class Omni {
         BitmapText helloText = new BitmapText(guiFont);
         helloText.setSize(guiFont.getCharSet().getRenderedSize());
         helloText.setText(text);
-        helloText.setLocalTranslation((start.x + end.x)/4f, (start.y + end.y)/2f, 0);
+        helloText.setLocalTranslation(((start.x + end.x)/2f) -((start.x + end.x)/16f)  , ((start.y + end.y)/2f) , 0);
         App.getInstance().app.getGuiNode().attachChild(helloText);
 
     }
 
+//    public void drawContainer(){
+//
+//        for (Omni o: omnis){
+//
+//            if (o.start.x > start.x && o.start.y > start.y && o.end.x < end.x && o.end.y < end.y){
+//                o.draw();
+//            }
+//
+//        }
+//
+//    }
+
     public void onClick(){
 
-
     }
+//    public void onClick(Vector2f position){
+//
+//        for (Omni o: omnis){
+//            if (position.x > o.start.x && position.x < o.end.x && position.y > o.start.y && position.y < o.end.y){
+//                o.onClick(position);
+//            }
+//        }
+//
+//    }
 }

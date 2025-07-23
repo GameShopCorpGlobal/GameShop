@@ -9,6 +9,7 @@ import com.gameshopcorp.gameshop.gameshopui.Screen;
 import com.gameshopcorp.gameshop.gameshopui.SimpleMeshUI;
 import com.gameshopcorp.gameshop.gameshopui.SuperSquareUI;
 import com.gameshopcorp.gameshop.graphics.ATMS;
+import com.gameshopcorp.gameshop.graphics.SuperMesh;
 import com.gameshopcorp.gameshop.niftygui.MyScreenController;
 import com.gameshopcorp.gameshop.niftygui.MyScreenController;
 import com.gameshopcorp.gameshop.supermesh.SuperCube;
@@ -32,6 +33,8 @@ import com.jme3.texture.Texture2D;
 import com.jme3.renderer.Camera;
 import com.jme3.ui.Picture;
 
+import java.util.ArrayList;
+
 import de.lessvoid.nifty.Nifty;
 
 public final class MyGame extends SimpleApplication {
@@ -50,6 +53,7 @@ public final class MyGame extends SimpleApplication {
         flyCam.setEnabled(true);
 
         getViewPort().setBackgroundColor(ColorRGBA.White);
+
 
         ATMS atms = new ATMS("BlueBox", 256, 256);
         atms.layer.drawCircle(128,128,256, new Vector4f(0,0,255,128));
@@ -72,6 +76,8 @@ public final class MyGame extends SimpleApplication {
 
         AppSuperMesh.getInstance().superMeshes.put("SuperCube", superCube.superMesh);
 
+        Selector selector = new Selector();
+        selector.populateSelectors();
         //Node uiNode = new Node("UI Node");
       //  SuperSquare ui = new SuperSquare("UI", atms, uiNode, 2, new Vector3f(-1,-1,0), new Vector3f(1,-1,0), new Vector3f(-1,1,0), new Vector3f(1,1,0), tex );
 //
@@ -101,8 +107,46 @@ public final class MyGame extends SimpleApplication {
 
         ATMS atmsButton = new ATMS("ATMSButton", 100,100);
         atmsButton.layer.drawCircle(50,50,100,new Vector4f(20,20,20,200));
+
+        ATMS atmsLabel = new ATMS("ATMSLabel", 100, 100);
+        atmsLabel.layer.drawCircle(50,50,100,new Vector4f(150,150,150,200));
+
+
+//        ATMS containerATMS = new ATMS("ATMSContainer", 100,100);
+//        containerATMS.layer.drawCircle(50,50,20,new Vector4f(0,0,255,200));
+
         uiScreen = new Screen();
-        Omni omni = new Omni("Hello GameShop", atmsButton, new Vector2f(), new Vector2f(250, 100)){
+        Omni omniReset = new Omni("Reset", atmsButton, new Vector2f(), new Vector2f(250, 100)){
+
+            @Override
+            public void onClick() {
+                super.onClick();
+                System.out.println("OMNI CLICKED");
+                selector.resetSelectors();
+            }
+        };
+
+        Omni omniClear = new Omni("Hide", atmsButton, new Vector2f(250,0), new Vector2f(500, 100)){
+
+            @Override
+            public void onClick() {
+                super.onClick();
+                System.out.println("OMNI CLICKED");
+                selector.clearSelectors();
+            }
+        };
+
+        Omni omniShow = new Omni("Show", atmsButton, new Vector2f(500,0), new Vector2f(750, 100)){
+
+            @Override
+            public void onClick() {
+                super.onClick();
+                System.out.println("OMNI CLICKED");
+                selector.showSelectors();
+            }
+        };
+
+        Omni omniMode = new Omni("Mode: ", atmsLabel, new Vector2f(0, this.settings.getHeight() - 50), new Vector2f(150, this.settings.getHeight())){
 
             @Override
             public void onClick() {
@@ -111,7 +155,66 @@ public final class MyGame extends SimpleApplication {
             }
         };
 
-        uiScreen.omnis.add(omni);
+        Omni omniMesh = new Omni("Mesh", atmsButton, new Vector2f(150, this.settings.getHeight() - 50), new Vector2f(300, this.settings.getHeight())){
+
+            @Override
+            public void onClick() {
+                super.onClick();
+                System.out.println("OMNI CLICKED");
+            }
+        };
+
+        Omni omniATMS = new Omni("ATMS", atmsButton, new Vector2f(300, this.settings.getHeight() - 50), new Vector2f(450, this.settings.getHeight())){
+
+            @Override
+            public void onClick() {
+                super.onClick();
+                System.out.println("OMNI CLICKED");
+            }
+        };
+
+        Omni omniSuperMesh = new Omni("SuperMesh: ", atmsLabel, new Vector2f(0, this.settings.getHeight() - 100), new Vector2f(150, this.settings.getHeight() - 50)){
+
+            @Override
+            public void onClick() {
+                super.onClick();
+                System.out.println("OMNI CLICKED");
+            }
+        };
+
+        ArrayList<Omni> superMeshContainer = new ArrayList<>();
+        float f = 150f;
+        for (String s: AppSuperMesh.getInstance().superMeshes.keySet()){
+            Omni superMesh = new Omni(s, atmsLabel, new Vector2f(0, this.settings.getHeight() - f), new Vector2f(150, this.settings.getHeight() - (f - 50))){
+
+                @Override
+                public void onClick() {
+                    super.onClick();
+                    System.out.println("SUPERMESH CLICKED");
+                }
+            };
+            superMeshContainer.add(superMesh);
+            f += 50f;
+        }
+
+//        Omni omniContainer = new Omni("Hi", containerATMS, new Vector2f(100,0), new Vector2f(250, 50)){
+//
+//            @Override
+//            public void onClick() {
+//                super.onClick();
+//                System.out.println("OMNI Container CLICKED");
+//            }
+//        };
+
+        //uiScreen.omnis.add(omniContainer);
+        uiScreen.omnis.add(omniMode);
+        uiScreen.omnis.add(omniMesh);
+        uiScreen.omnis.add(omniATMS);
+        uiScreen.omnis.add(omniReset);
+        uiScreen.omnis.add(omniClear);
+        uiScreen.omnis.add(omniShow);
+        uiScreen.omnis.add(omniSuperMesh);
+        uiScreen.omnis.addAll(superMeshContainer);
         uiScreen.draw();
         //Player player = new Player();
 
@@ -158,8 +261,7 @@ public final class MyGame extends SimpleApplication {
 //        this.rootNode.attachChild(superSquare.node);
 
 
-        Selector selector = new Selector();
-        selector.populateSelectors();
+
         // disable the fly cam
       //  flyCam.setEnabled(false);
         //flyCam.setDragToRotate(true);

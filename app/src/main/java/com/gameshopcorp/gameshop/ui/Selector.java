@@ -36,7 +36,7 @@ public class Selector implements TouchListener {
     //public String selected = "NONE";// NONE, SUPERMESH, SUPERSURFACE, SUPERLINE, VECTOR3F
 
     public ArrayList<Geometry> selectors;
-    public Geometry selected;
+    public ArrayList<Geometry> selected;
 
     public Node selectorNode;
     public Selector(){
@@ -47,6 +47,7 @@ public class Selector implements TouchListener {
         App.getInstance().app.getInputManager().addListener(this, "MyTouch");
 
         selectors = new ArrayList<>();
+        selected = new ArrayList<>();
 
     }
 
@@ -103,8 +104,8 @@ public class Selector implements TouchListener {
 
 
                             if (!added) {
-                                App.getInstance().app.getRootNode().attachChild(geom);
-                                selectors.add(geom);
+                               selectorNode.attachChild(geom);
+                               selectors.add(geom);
                             }
 
                            // SuperCube superCube = genSuperCube();
@@ -116,23 +117,35 @@ public class Selector implements TouchListener {
                 }
 
             }
-            //System.out.println("Selectors Size: " + selectors.size());
-
+           showSelectors();
 
     }
 
+    public void showSelectors(){
+        App.getInstance().app.getRootNode().attachChild(selectorNode);
+        System.out.println("Selectors Size: " + selectors.size());
+
+    }
+
+    public void resetSelectors(){
+
+        Material mat = new Material(App.getInstance().app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+        mat.setColor("Color", ColorRGBA.Red);
+
+        for (Geometry g: selectors){
+            g.setMaterial(mat);
+        }
+        selected.clear();
+    }
     public void clearSelectors(){
 
 
-        selectorNode.detachAllChildren();
+        App.getInstance().app.getRootNode().detachChild(selectorNode);
 
 
     }
 
-    public void evaluateClick(){
 
-        
-    }
 
     @Override
     public void onTouch(String name, TouchEvent event, float tpf) {
@@ -179,6 +192,9 @@ public class Selector implements TouchListener {
                         float dist = results.getCollision(i).getDistance();
                         Vector3f pt = results.getCollision(i).getContactPoint();
                         String target = results.getCollision(i).getGeometry().getName();
+//                        if (results.getCollision(i).getGeometry().getName().contains("Box")){
+//                            selected.add(results.getCollision(i).getGeometry())
+//                        }
                         System.out.println("Selection #" + i + ": " + target + " at " + pt + ", " + dist + " WU away.");
                     }
                     // Use the results -- we rotate the selected geometry.
@@ -187,10 +203,11 @@ public class Selector implements TouchListener {
                         Geometry target = results.getClosestCollision().getGeometry();
                         // Here comes the action:
                         if (target.getName().contains("Box")) {
-                            selected = target;
+
                             Material mat = new Material(App.getInstance().app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
                             mat.setColor("Color", ColorRGBA.Blue);
-                            selected.setMaterial(mat);
+                            target.setMaterial(mat);
+                            selected.add(target);
                             //target.rotate(0, -5f, 0);
                         }
                     }
