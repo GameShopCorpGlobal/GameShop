@@ -123,6 +123,7 @@ public final class MyGame extends SimpleApplication {
                 super.onClick();
                 System.out.println("OMNI CLICKED");
                 selector.resetSelectors();
+                selector.clearMovers();
             }
         };
 
@@ -133,6 +134,7 @@ public final class MyGame extends SimpleApplication {
                 super.onClick();
                 System.out.println("OMNI CLICKED");
                 selector.clearSelectors();
+                selector.hideMovers();
             }
         };
 
@@ -143,6 +145,7 @@ public final class MyGame extends SimpleApplication {
                 super.onClick();
                 System.out.println("OMNI CLICKED");
                 selector.showSelectors();
+                selector.showMovers();
             }
         };
 

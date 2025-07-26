@@ -135,6 +135,8 @@ public class Selector implements TouchListener {
 
 
     public void moveAllSelectedPoints() {
+        lastSelection.clear();
+        lastSelection.addAll(selected);
         for (SuperMesh s : AppSuperMesh.getInstance().superMeshes.values()) {
 
             for (SuperSurface ss : s.superMesh.values()) {
@@ -165,10 +167,9 @@ public class Selector implements TouchListener {
 
         }
 
-        if (lastSelection.size() < selected.size()) {
-            lastSelection.clear();
-            lastSelection.addAll(selected);
-        }
+        //if (lastSelection.size() < selected.size()) {
+
+        //}
 
 //        for (SuperMesh s: AppSuperMesh.getInstance().superMeshes.values()){
 //
@@ -231,7 +232,7 @@ public class Selector implements TouchListener {
             moveSpeed = moveSpeed.add(new Vector3f(0, 0f, .01f));
             moveNode.move(0,0f,.01f);
         } else if (direction.equals("back")){
-            moveSpeed = moveSpeed.add(new Vector3f(0, .01f, -.01f));
+            moveSpeed = moveSpeed.add(new Vector3f(0, 0, -.01f));
             moveNode.move(0,0f,-.01f);
         }
 
@@ -247,12 +248,27 @@ public class Selector implements TouchListener {
 
     }
 
-    public void hideMovers(){
-
-    }
     public void clearMovers(){
         movers.clear();
         moveNode.detachAllChildren();
+    }
+
+    public void showMovers(){
+        App.getInstance().app.getRootNode().attachChild(moveNode);
+    }
+
+    public void hideMovers(){
+        //movers.clear();
+        App.getInstance().app.getRootNode().detachChild(moveNode);
+    }
+
+    public void resetMovers(){
+
+        for (Geometry g: movers){
+            Material mat = new Material(App.getInstance().app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+            mat.setColor("Color", ColorRGBA.Red);
+            g.setMaterial(mat);
+        }
     }
 
     public void adjustCenter(){
@@ -376,7 +392,9 @@ public class Selector implements TouchListener {
 //                    for (SuperMesh s: AppSuperMesh.getInstance().superMeshes.values()){
 //                        s.update();
 //                    }
-                    moveAllSelectedPoints();
+                    if (!movers.isEmpty()) {
+                        moveAllSelectedPoints();
+                    }
                     // Handle touch up event
                     System.out.println("Touch Up at: " + event.getX() + ", " + event.getY());
                     break;
@@ -435,6 +453,7 @@ public class Selector implements TouchListener {
 
                         if (target.getName().contains("Move")){
 
+                            resetMovers();
                             Material mat = new Material(App.getInstance().app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
                             mat.setColor("Color", ColorRGBA.Blue);
                             target.setMaterial(mat);
@@ -481,16 +500,16 @@ public class Selector implements TouchListener {
                             }
                         }
                         if (moverDirection.equals("front")){
-                            if (event.getDeltaX() > 0f){
+                            if (event.getDeltaX() < 0f){
                                 move("back");
-                            } else if (event.getDeltaX() < 0f){
+                            } else if (event.getDeltaX() > 0f){
                                 move("front");
                             }
                         }
                         if (moverDirection.equals("back")){
-                            if (event.getDeltaX() > 0f){
+                            if (event.getDeltaX() < 0f){
                                 move("back");
-                            } else if (event.getDeltaX() < 0f){
+                            } else if (event.getDeltaX() > 0f){
                                 move("front");
                             }
                         }
