@@ -37,18 +37,31 @@ public class Selector implements TouchListener {
 
     public ArrayList<Geometry> selectors;
     public ArrayList<Geometry> selected;
+    public ArrayList<Geometry> movers;
 
+    public Geometry selectedMover;
+    public Vector3f center;
     public Node selectorNode;
+
+    public Node moveNode;
+    public String moverDirection;
+    public Vector3f moveSpeed;
+
+    public ArrayList<Geometry> lastSelection;
     public Selector(){
 
         selectorNode = new Node("Selector");
+        moveNode = new Node("Mover");
         // Set up touch input
         App.getInstance().app.getInputManager().addMapping("MyTouch", new TouchTrigger(TouchInput.ALL));
         App.getInstance().app.getInputManager().addListener(this, "MyTouch");
 
         selectors = new ArrayList<>();
         selected = new ArrayList<>();
-
+        movers = new ArrayList<>();
+        center = new Vector3f();
+        moveSpeed = new Vector3f();
+        lastSelection = new ArrayList<>();
     }
 
 //    public SuperCube genSuperCube(){
@@ -73,6 +86,169 @@ public class Selector implements TouchListener {
 //        superCube.superMesh.node.scale(.33f);
 //        return superCube;
 //    }
+
+    public void populateMovers(){
+
+        adjustCenter();
+        Box b = new Box(.1f, .1f, .1f);
+        for (int i = 0; i < 6; i++) {
+            Geometry geom = new Geometry("Mover", b);
+
+            Material mat = new Material(App.getInstance().app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+            mat.setColor("Color", ColorRGBA.Red);
+            geom.setMaterial(mat);
+            if (i == 0) { //up
+                moverDirection = "up";
+                geom.setLocalTranslation((new Vector3f(0,.33f, 0f)));
+            } else if (i == 1){ //down
+                moverDirection = "down";
+                geom.setLocalTranslation( (new Vector3f(0,-.33f, 0f)));
+            } else if (i == 2){ //left
+                moverDirection = "left";
+                geom.setLocalTranslation((new Vector3f(-.33f,0, 0f)));
+
+            }else if (i == 3){
+                moverDirection = "right";
+                geom.setLocalTranslation( (new Vector3f(.33f,0, 0f)));
+
+            }else if (i == 4){//front
+                moverDirection = "front";
+                geom.setLocalTranslation( (new Vector3f(0,0, .33f)));
+
+            }else if (i == 5){
+                moverDirection = "down";
+                geom.setLocalTranslation( (new Vector3f(0,0, -.33f)));
+
+            }
+            movers.add(geom);
+            moveNode.attachChild(geom);
+        }
+        App.getInstance().app.getRootNode().attachChild(moveNode);
+    }
+
+
+    public void moveAllSelectedPoints(){
+        for (SuperMesh s: AppSuperMesh.getInstance().superMeshes.values()){
+
+            for (SuperSurface ss: s.superMesh.values()){
+                byte y = 0;
+                for (SuperLine sl: ss.currencyLines){
+
+                    byte x = 0;
+                    for (Vector3f v: sl.points){
+
+                        for (int g = 0; g < lastSelection.size(); g++) {
+                            if (lastSelection.get(g).getLocalTranslation().equals(v)){
+                                ss.moveSuperLine(y,x, moveSpeed);
+                               // selected.get(g).move(moveSpeed);
+                            }
+                            //if (g.getLocalTranslation().distance(v) < 0.05f) {
+                            // ss.moveSuperLine((byte)y, (byte) x, new Vector3f(0f, .01f, 0f));
+                            //g.move(0f, .01f, 0f);
+                            // ss.updateSimpleMeshes();
+
+                            //    }
+                        }
+                         x++;
+                    }
+                     y++;
+                }
+                //  ss.updateSimpleMeshes();
+            }
+
+        }
+
+        for (SuperMesh s: AppSuperMesh.getInstance().superMeshes.values()){
+
+            for (SuperSurface ss: s.superMesh.values()){
+                byte y = 0;
+                for (SuperLine sl: ss.currencyLines){
+
+                    byte x = 0;
+                    for (Vector3f v: sl.points){
+
+                        for (int g = 0; g < lastSelection.size(); g++) {
+                            if (lastSelection.get(g).getLocalTranslation().equals(v)){
+                                //ss.moveSuperLine(y,x, moveSpeed);
+                                selected.get(g).move(moveSpeed);
+                            }
+                            //if (g.getLocalTranslation().distance(v) < 0.05f) {
+                            // ss.moveSuperLine((byte)y, (byte) x, new Vector3f(0f, .01f, 0f));
+                            //g.move(0f, .01f, 0f);
+                            // ss.updateSimpleMeshes();
+
+                            //    }
+                        }
+                        x++;
+                    }
+                    y++;
+                }
+                //  ss.updateSimpleMeshes();
+            }
+
+        }
+
+
+
+        //lastSelection.clear();
+        moveSpeed = new Vector3f();
+    }
+    public void move(String direction){
+
+        if (direction.equals("up")){
+            moveSpeed = moveSpeed.add(new Vector3f(0, .01f, 0));
+            moveNode.move(0,.01f,0f);
+
+            if (lastSelection.size() < selected.size()){
+                lastSelection.clear();
+                lastSelection.addAll(selected);
+            }
+
+
+            }
+        //}
+
+
+    }
+
+    public void hideMovers(){
+
+    }
+    public void clearMovers(){
+        movers.clear();
+        moveNode.detachAllChildren();
+    }
+
+    public void adjustCenter(){
+
+        center = new Vector3f();
+        if (!selected.isEmpty()){
+
+            int i = 0;
+            for (Geometry g: selected) {
+                if (i == 0) {
+                    center = g.getLocalTranslation();
+                } else {
+                    center = center.add(g.getLocalTranslation());
+                }
+                System.out.println("G" + g.getLocalTranslation());
+                i++;
+            }
+            center =  center.divide(selected.size());
+
+
+        } else {
+            center = new Vector3f();
+        }
+
+        moveNode.setLocalTranslation(center);
+        System.out.println("SIZE" + selected.size());
+        System.out.println("Center" + center);
+       // System.out.println );
+        //moveNode.setLocalTranslation(center);
+    }
+
+
     public void populateSelectors(){
 
 
@@ -161,10 +337,15 @@ public class Selector implements TouchListener {
                     // ... (rest of your picking logic)
                     break;
                 case UP:
+//                    for (SuperMesh s: AppSuperMesh.getInstance().superMeshes.values()){
+//                        s.update();
+//                    }
+                    moveAllSelectedPoints();
                     // Handle touch up event
                     System.out.println("Touch Up at: " + event.getX() + ", " + event.getY());
                     break;
                 case MOVE:
+
                     // Handle touch move event
                     System.out.println("Touch Move to: " + event.getX() + ", " + event.getY());
                     // Example: Move an object based on touch movement
@@ -208,7 +389,21 @@ public class Selector implements TouchListener {
                             mat.setColor("Color", ColorRGBA.Blue);
                             target.setMaterial(mat);
                             selected.add(target);
+                            if (movers.isEmpty()){
+                                populateMovers();
+                            } else {
+                                adjustCenter();
+                            }
                             //target.rotate(0, -5f, 0);
+                        }
+
+                        if (target.getName().contains("Move")){
+
+                            Material mat = new Material(App.getInstance().app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+                            mat.setColor("Color", ColorRGBA.Blue);
+                            target.setMaterial(mat);
+                            //selected.add(target);
+                            selectedMover = target;
                         }
                     }
 
@@ -216,6 +411,52 @@ public class Selector implements TouchListener {
                     System.out.println("Tap detected at: " + event.getX() + ", " + event.getY());
                     break;
                 case SCROLL:
+                    if (selectedMover != null){
+                        if (moverDirection.equals("up")){
+                            if (event.getDeltaY() > 0f){
+                                move("up");
+                            } else if (event.getDeltaY() < 0f){
+                                move("down");
+                            }
+                        }
+                        if (moverDirection.equals("down")){
+                            if (event.getDeltaY() > 0f){
+                                move("up");
+                            } else if (event.getDeltaY() < 0f){
+                                move("down");
+                            }
+                        }
+                        if (moverDirection.equals("front")){
+                            if (event.getDeltaX() > 0f){
+                                move("back");
+                            } else if (event.getDeltaX() < 0f){
+                                move("front");
+                            }
+                        }
+                        if (moverDirection.equals("back")){
+                            if (event.getDeltaX() > 0f){
+                                move("back");
+                            } else if (event.getDeltaX() < 0f){
+                                move("front");
+                            }
+                        }
+                        if (moverDirection.equals("left")){
+                            if (event.getDeltaX() > 0f){
+                                move("right");
+                            } else if (event.getDeltaX() < 0f){
+                                move("left");
+                            }
+                        }
+                        if (moverDirection.equals("right")){
+                            if (event.getDeltaX() > 0f){
+                                move("right");
+                            } else if (event.getDeltaX() < 0f){
+                                move("left");
+                            }
+                        }
+                    }
+
+
                     // Handle a scroll gesture
                     System.out.println("Scroll detected. Scale Span: " + event.getScaleSpan() + ", Delta Scale Span: " + event.getDeltaScaleSpan());
                     break;

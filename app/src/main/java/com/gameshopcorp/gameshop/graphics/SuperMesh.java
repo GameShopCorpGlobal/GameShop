@@ -33,4 +33,11 @@ public class SuperMesh {
 
     }
 
+    public void update(){
+//        for (SuperSurface s: superMesh.values()){
+//            s.updateSimpleMeshes();
+//            System.out.println("SM UPDATE");
+//        }
+    }
+
 }

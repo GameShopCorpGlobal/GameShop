@@ -88,6 +88,7 @@ public class SuperSurface {
 
     public void updateSimpleMeshes(){
 
+        System.out.println("SS UPDATE");
         int maxX = this.vInfinitesimals[0].infinitesimals.length - 1;
         int maxY = this.vInfinitesimals.length - 1;
 
