@@ -1,14 +1,14 @@
 [versions]
 agp = "8.11.1"
-fontbox = "3.0.5"
-groovyAll = "4.0.27"
-guava = "33.4.8-jre"
-jme3FreetypeFont = "0.2.3"
+#fontbox = "3.0.5"
+#groovyAll = "4.0.27"
+#guava = "33.4.8-jre"
+#jme3FreetypeFont = "0.2.3"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 appcompat = "1.7.1"
-lemur = "1.16.0"
+#lemur = "1.16.0"
 material = "1.10.0"
 activity = "1.8.0"
 constraintlayout = "2.1.4"
@@ -19,11 +19,11 @@ multidex = "1.0.3"
 [libraries]
 #guava = { module = "com.google.guava:guava", version.ref = "guava" }
 #groovy-all = { module = "org.apache.groovy:groovy-all", version.ref = "groovyAll" }
-fontbox = { module = "org.apache.pdfbox:fontbox", version.ref = "fontbox" }
+#fontbox = { module = "org.apache.pdfbox:fontbox", version.ref = "fontbox" }
 jme3-android-native = { module = "org.jmonkeyengine:jme3-android-native", version.ref = "jme3Core" }
 jme3-core = { module = "org.jmonkeyengine:jme3-core", version.ref = "jme3Core" }
 jme3-effects = { module = "org.jmonkeyengine:jme3-effects", version.ref = "jme3Core" }
-jme3-freetype-font = { module = "io.github.jmecn:jme3-freetype-font", version.ref = "jme3FreetypeFont" }
+#jme3-freetype-font = { module = "io.github.jmecn:jme3-freetype-font", version.ref = "jme3FreetypeFont" }
 jme3-niftygui = {module = "org.jmonkeyengine:jme3-niftygui", version.ref = "jme3Core"}
 #lemur = { module = "com.simsilica:lemur", version.ref = "lemur" }
 multidex = { module = "com.android.support:multidex", version.ref = "multidex" }

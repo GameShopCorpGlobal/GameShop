@@ -2,7 +2,7 @@
 <nifty>
     <useStyles filename="nifty-default-styles.xml" />
     <useControls filename="nifty-default-controls.xml" />
-    <screen id="start" controller="com.gameshopcorp.gameshop.niftygui.MyScreenController">
+    <screen id="start" controller="com.gameshopcorp.gameshopengine.niftygui.MyScreenController">
         <layer id="layer" backgroundColor="#0000" childLayout="vertical">
 <!--            <panel id="panel" height="25%" width="35%" align="center" valign="center" backgroundColor="#f60f" childLayout="center" visibleToMouse="true">-->
 <!--                <interact onClick="quit()"/>-->
