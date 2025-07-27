@@ -43,10 +43,13 @@ public class Selector implements TouchListener {
     public Vector3f moveSpeed;
 
     public ArrayList<Geometry> lastSelection;
+    public Node scaleNode;
+    public Geometry scaler;
     public Selector(){
 
         selectorNode = new Node("Selector");
         moveNode = new Node("Mover");
+        scaleNode = new Node("Scaler");
         // Set up touch input
         App.getInstance().app.getInputManager().addMapping("MyTouch", new TouchTrigger(TouchInput.ALL));
         App.getInstance().app.getInputManager().addListener(this, "MyTouch");
@@ -57,6 +60,7 @@ public class Selector implements TouchListener {
         center = new Vector3f();
         moveSpeed = new Vector3f();
         lastSelection = new ArrayList<>();
+        //scaler = new ArrayList<>();
     }
 
 //    public SuperCube genSuperCube(){
@@ -81,6 +85,35 @@ public class Selector implements TouchListener {
 //        superCube.superMesh.node.scale(.33f);
 //        return superCube;
 //    }
+
+    public boolean scalerSelected = false;
+    public void addScaler(){
+
+        if (scaler != null){
+            //scaler = null;
+            App.getInstance().app.getRootNode().detachChild(scaleNode);
+        }
+        scalerSelected = false;
+            Box b = new Box(.1f, .1f, .1f);
+
+            Geometry geom = new Geometry("Scaler", b);
+
+            Material mat = new Material(App.getInstance().app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+            mat.setColor("Color", ColorRGBA.Orange);
+            geom.setMaterial(mat);
+            scaler = geom;
+            scaleNode.setLocalTranslation(center);
+            scaleNode.attachChild(scaler);
+            scaleNode.move(-1,1,-1);
+        App.getInstance().app.getRootNode().attachChild(scaleNode);
+    }
+
+    public void resetScaler(){
+        Material mat = new Material(App.getInstance().app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+        mat.setColor("Color", ColorRGBA.Orange);
+        scaler.setMaterial(mat);
+        scalerSelected = false;
+    }
 
     public void populateMovers(){
 
@@ -125,6 +158,7 @@ public class Selector implements TouchListener {
             moveNode.attachChild(geom);
         }
         App.getInstance().app.getRootNode().attachChild(moveNode);
+
     }
 
 
@@ -367,6 +401,34 @@ public class Selector implements TouchListener {
 
     }
 
+    public void moveAllSelectedPointsRelativeToCenter(){
+
+
+
+            for (Geometry g: selected){
+               // Vector3f totalPercentage = new Vector3f(((center.add(-1,1,-1).subtract(center.add(scaleNode.getLocalTranslation())))));
+
+                Vector3f startingPoint = center.add(-1,1,-1);
+                Vector3f totalPercentage = new Vector3f((startingPoint).subtract((scaleNode.getLocalTranslation())));
+
+                System.out.println("TOTAL PERCENTAGE " + totalPercentage);
+
+//                Vector3f distanceFromCenter = g.getLocalTranslatinslation().add(center);
+                Vector3f total = new Vector3f(g.getLocalTranslation().subtract(center)).mult(totalPercentage);
+               // totalPercentage = totalPercentage.mult(-1);
+                g.move(total);
+            }
+
+    }
+
+    Vector3f lastScalerLocation;
+    Vector3f scaleMovePercentage;
+    public void moveScaler(Vector3f percentage){
+        lastScalerLocation = new Vector3f(-1,1,-1);
+        scaleMovePercentage = new Vector3f(percentage);
+        scaleNode.move(percentage);
+
+    }
 
 
     @Override
@@ -388,6 +450,20 @@ public class Selector implements TouchListener {
 //                    }
                     if (!movers.isEmpty()) {
                         moveAllSelectedPoints();
+                    }
+
+                    if (lastScalerLocation != null && scaleNode != null) {
+                       if (scalerSelected) {
+                           //if (center.distance(lastScalerLocation) < center.distance(scaleNode.getLocalTranslation())) {
+
+                               moveAllSelectedPointsRelativeToCenter();
+//                           }
+//
+//                           if (center.distance(lastScalerLocation) > center.distance(scaleNode.getLocalTranslation())) {
+//
+//                               moveAllSelectedPointsRelativeToCenter();
+//                           }
+                       }
                     }
                     // Handle touch up event
                     System.out.println("Touch Up at: " + event.getX() + ", " + event.getY());
@@ -429,56 +505,131 @@ public class Selector implements TouchListener {
                     // Use the results -- we rotate the selected geometry.
                     if (results.size() > 0) {
                         // The closest result is the target that the player picked:
-                        Geometry target = results.getClosestCollision().getGeometry();
-                        // Here comes the action:
-                        if (target.getName().contains("Box")) {
+                        Geometry target = null;
+                        for (int i = 0; i < results.size(); i++) {
+                            String targetName = results.getCollision(i).getGeometry().getName();
 
-                            Material mat = new Material(App.getInstance().app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-                            mat.setColor("Color", ColorRGBA.Blue);
-                            target.setMaterial(mat);
-                            selected.add(target);
-                            if (movers.isEmpty()){
-                                populateMovers();
-                            } else {
-                                adjustCenter();
+                            if (!targetName.contains("Box") && !targetName.contains("Move") && !targetName.contains("Scale")) {
+                                continue;
                             }
-                            //target.rotate(0, -5f, 0);
+                            target = results.getCollision(i).getGeometry();
+                            break;
                         }
+                        if (target != null){
+                            //forresults.getClosestCollision().getGeometry();
+                            // Here comes the action:
+                            if (target.getName().contains("Box")) {
 
-                        if (target.getName().contains("Move")){
+                                Material mat = new Material(App.getInstance().app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+                                mat.setColor("Color", ColorRGBA.Blue);
+                                target.setMaterial(mat);
+                                selected.add(target);
+                                if (movers.isEmpty()) {
+                                    populateMovers();
+                                } else {
+                                    adjustCenter();
+                                    if (selected.size() > 1) {
+                                        addScaler();
+                                    }
+                                }
+                                //target.rotate(0, -5f, 0);
+                            }
+
+                        if (target.getName().contains("Move")) {
 
                             resetMovers();
+                            resetScaler();
                             Material mat = new Material(App.getInstance().app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
                             mat.setColor("Color", ColorRGBA.Blue);
                             target.setMaterial(mat);
                             //selected.add(target);
                             selectedMover = target;
-                            if (target.getName().contains("Up")){
+                            if (target.getName().contains("Up")) {
                                 moverDirection = "up";
                             }
-                            if (target.getName().contains("Down")){
+                            if (target.getName().contains("Down")) {
                                 moverDirection = "down";
                             }
-                            if (target.getName().contains("Left")){
+                            if (target.getName().contains("Left")) {
                                 moverDirection = "left";
                             }
-                            if (target.getName().contains("Right")){
+                            if (target.getName().contains("Right")) {
                                 moverDirection = "right";
                             }
-                            if (target.getName().contains("Front")){
+                            if (target.getName().contains("Front")) {
                                 moverDirection = "front";
                             }
-                            if (target.getName().contains("Back")){
+                            if (target.getName().contains("Back")) {
                                 moverDirection = "back";
                             }
                         }
+                        if (target.getName().contains("Scale")) {
+                            //resetScaler();
+                            Material mat = new Material(App.getInstance().app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+                            mat.setColor("Color", ColorRGBA.Green);
+                            scaler.setMaterial(mat);
+                            scalerSelected = true;
+                            System.out.println("SELECTED SCALE");
+                        }
+                    }
                     }
 
                     // Handle a tap gesture
                     System.out.println("Tap detected at: " + event.getX() + ", " + event.getY());
                     break;
                 case SCROLL:
-                    if (selectedMover != null){
+                    if (scalerSelected){
+
+                        Vector3f movePercentage = new Vector3f();
+                        if (event.getDeltaX() > 0){
+                            if (scaleNode.getLocalTranslation().x > center.x){
+                                movePercentage.setX(-0.01f);
+                            } else if (scaleNode.getLocalTranslation().x < center.x)  {
+                                movePercentage.setX(0.01f);
+                            }
+
+                            if (scaleNode.getLocalTranslation().y > center.y){
+                                movePercentage.setY(-0.01f);
+                            } else if (scaleNode.getLocalTranslation().y < center.y)  {
+                                movePercentage.setY(0.01f);
+                            }
+
+                            if (scaleNode.getLocalTranslation().z > center.z){
+                                movePercentage.setZ(-0.01f);
+                            } else if (scaleNode.getLocalTranslation().z < center.z)  {
+                                movePercentage.setZ(0.01f);
+                            }
+
+
+//                           moveScaler()
+                            // moveAllSelectedPointsRelativeToCenter(true);
+                        } else {
+                            if (scaleNode.getLocalTranslation().x > center.x){
+                                movePercentage.setX(0.01f);
+                            } else if (scaleNode.getLocalTranslation().x < center.x)  {
+                                movePercentage.setX(-0.01f);
+                            }
+
+                            if (scaleNode.getLocalTranslation().y > center.y){
+                                movePercentage.setY(0.01f);
+
+                            } else if (scaleNode.getLocalTranslation().y < center.y)  {
+                                movePercentage.setY(-0.01f);
+
+                            }
+
+                            if (scaleNode.getLocalTranslation().z > center.z){
+                                movePercentage.setZ(0.01f);
+
+                            } else if (scaleNode.getLocalTranslation().z < center.z)  {
+                                movePercentage.setZ(-0.01f);
+
+                            }
+                            //moveAllSelectedPointsRelativeToCenter(false);
+                        }
+                        moveScaler(movePercentage);
+                    }
+                    else if (selectedMover != null){
                         if (moverDirection.equals("up")){
                             if (event.getDeltaY() > 0f){
                                 move("up");
