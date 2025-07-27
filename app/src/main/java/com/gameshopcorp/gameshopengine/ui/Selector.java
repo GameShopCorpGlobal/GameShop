@@ -403,6 +403,8 @@ public class Selector implements TouchListener {
 
     public void moveAllSelectedPointsRelativeToCenter(){
 
+        lastSelection.clear();
+        lastSelection.addAll(selected);
 
 
             for (Geometry g: selected){
@@ -411,6 +413,7 @@ public class Selector implements TouchListener {
                 Vector3f startingPoint = center.add(-1,1,-1);
                 Vector3f totalPercentage = new Vector3f((startingPoint).subtract((scaleNode.getLocalTranslation())));
 
+                totalPercentage = totalPercentage.mult(1,-1,1);
                 System.out.println("TOTAL PERCENTAGE " + totalPercentage);
 
 //                Vector3f distanceFromCenter = g.getLocalTranslatinslation().add(center);
@@ -418,6 +421,36 @@ public class Selector implements TouchListener {
                // totalPercentage = totalPercentage.mult(-1);
                 g.move(total);
             }
+
+        for (SuperMesh s : AppSuperMesh.getInstance().superMeshes.values()) {
+
+            for (SuperSurface ss : s.superMesh.values()) {
+                byte y = 0;
+                for (SuperLine sl : ss.currencyLines) {
+
+                    byte x = 0;
+                    for (Vector3f v : sl.points) {
+
+                        for (int g = 0; g < lastSelection.size(); g++) {
+                            if (lastSelection.get(g).getLocalTranslation().equals(v)) {
+                                ss.setSuperLine(y, x, selected.get(g).getLocalTranslation());
+                                // selected.get(g).move(moveSpeed);
+                            }
+                            //if (g.getLocalTranslation().distance(v) < 0.05f) {
+                            // ss.moveSuperLine((byte)y, (byte) x, new Vector3f(0f, .01f, 0f));
+                            //g.move(0f, .01f, 0f);
+                            // ss.updateSimpleMeshes();
+
+                            //    }
+                        }
+                        x++;
+                    }
+                    y++;
+                }
+                //  ss.updateSimpleMeshes();
+            }
+
+        }
 
     }
 
@@ -450,21 +483,23 @@ public class Selector implements TouchListener {
 //                    }
                     if (!movers.isEmpty()) {
                         moveAllSelectedPoints();
-                    }
+                        if (lastScalerLocation != null && scaleNode != null) {
+                            if (scalerSelected) {
+                                //if (center.distance(lastScalerLocation) < center.distance(scaleNode.getLocalTranslation())) {
 
-                    if (lastScalerLocation != null && scaleNode != null) {
-                       if (scalerSelected) {
-                           //if (center.distance(lastScalerLocation) < center.distance(scaleNode.getLocalTranslation())) {
-
-                               moveAllSelectedPointsRelativeToCenter();
+                                moveAllSelectedPointsRelativeToCenter();
 //                           }
 //
 //                           if (center.distance(lastScalerLocation) > center.distance(scaleNode.getLocalTranslation())) {
 //
 //                               moveAllSelectedPointsRelativeToCenter();
 //                           }
-                       }
+                            }
+                        }
                     }
+                    resetMovers();
+
+
                     // Handle touch up event
                     System.out.println("Touch Up at: " + event.getX() + ", " + event.getY());
                     break;
@@ -565,6 +600,7 @@ public class Selector implements TouchListener {
                         }
                         if (target.getName().contains("Scale")) {
                             //resetScaler();
+                            resetMovers();
                             Material mat = new Material(App.getInstance().app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
                             mat.setColor("Color", ColorRGBA.Green);
                             scaler.setMaterial(mat);
@@ -629,7 +665,7 @@ public class Selector implements TouchListener {
                         }
                         moveScaler(movePercentage);
                     }
-                    else if (selectedMover != null){
+                    if (selectedMover != null){
                         if (moverDirection.equals("up")){
                             if (event.getDeltaY() > 0f){
                                 move("up");
