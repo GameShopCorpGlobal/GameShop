@@ -30,6 +30,7 @@ public class Selector implements TouchListener {
 
     //public String selected = "NONE";// NONE, SUPERMESH, SUPERSURFACE, SUPERLINE, VECTOR3F
 
+    /*
     public ArrayList<Geometry> selectors;
     public ArrayList<Geometry> selected;
     public ArrayList<Geometry> movers;
@@ -37,7 +38,6 @@ public class Selector implements TouchListener {
     public Geometry selectedMover;
     public Vector3f center;
     public Node selectorNode;
-
     public Node moveNode;
     public String moverDirection;
     public Vector3f moveSpeed;
@@ -45,23 +45,137 @@ public class Selector implements TouchListener {
     public ArrayList<Geometry> lastSelection;
     public Node scaleNode;
     public Geometry scaler;
-    public Selector(){
 
-        selectorNode = new Node("Selector");
-        moveNode = new Node("Mover");
-        scaleNode = new Node("Scaler");
+     */
+
+    public ArrayList<ArrayGeometrySelector> geometrySelectors;
+    public ArrayList<GeometryMover> geometryMovers;
+    public GeometryScaler geometryScaler;
+    public Selector() {
+
+        geometrySelectors = new ArrayList<>();
+        geometryMovers = new ArrayList<>();
+//        selectorNode = new Node("Selector");
+//        moveNode = new Node("Mover");
+//        scaleNode = new Node("Scaler");
         // Set up touch input
         App.getInstance().app.getInputManager().addMapping("MyTouch", new TouchTrigger(TouchInput.ALL));
         App.getInstance().app.getInputManager().addListener(this, "MyTouch");
 
-        selectors = new ArrayList<>();
-        selected = new ArrayList<>();
-        movers = new ArrayList<>();
-        center = new Vector3f();
-        moveSpeed = new Vector3f();
-        lastSelection = new ArrayList<>();
+        populateGeometrySelectors();
+//        selectors = new ArrayList<>();
+//        selected = new ArrayList<>();
+//        movers = new ArrayList<>();
+//        center = new Vector3f();
+//        moveSpeed = new Vector3f();
+//        lastSelection = new ArrayList<>();
         //scaler = new ArrayList<>();
+
+
     }
+
+    public void populateGeometrySelectors(){
+
+//        ArrayGeometrySelector ags = new ArrayGeometrySelector();
+//
+//        geometrySelectors.add(ags);
+        for (SuperMesh sm: AppSuperMesh.getInstance().superMeshes.values()){
+            for (SuperSurface s: sm.superMesh.values()){
+                byte row = 0;
+                for (SuperLine sl: s.currencyLines){
+                    byte column = 0;
+                    for (Vector3f v: sl.points){
+                        ArrayGeometrySelector ags = new ArrayGeometrySelector();
+                        GeometrySelector gs = new GeometrySelector(s, row, column);
+                        Box b = new Box(.1f, .1f, .1f);
+                        gs.setName("Box" + sm + s + sl + v);
+                        gs.setMesh(b);
+
+                        Material mat = new Material(App.getInstance().app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+                        mat.setColor("Color", ColorRGBA.Red);
+                        gs.setMaterial(mat);
+                        gs.setLocalTranslation(v);
+
+
+                        boolean hasDuplicate = false;
+                      //  ags.array.add(gs);
+
+                        ArrayGeometrySelector select = null;
+                        for (ArrayGeometrySelector selector: geometrySelectors){
+                            for (GeometrySelector g: selector.array){
+                                if (g.getLocalTranslation().equals(gs.getLocalTranslation())){
+                                    //selector.array.add(gs);
+                                    select = selector;
+                                    hasDuplicate = true;
+                                }
+                            }
+                        }
+
+                        if (!hasDuplicate){
+                            ags.array.add(gs);
+                            geometrySelectors.add(ags);
+                        } else {
+                            select.array.add(gs);
+
+                        }
+
+                       // geometrySelectors.add(ags);
+                    }
+                }
+
+            }
+        }
+
+        for (ArrayGeometrySelector ags: geometrySelectors){
+            for (GeometrySelector gs: ags.array){
+                App.getInstance().app.getRootNode().attachChild(gs);
+            }
+        }
+
+        System.out.println("SIZE " + geometrySelectors.size());
+      //  mergeGeometrySelectorArrays();
+
+
+    }
+
+    //public void mergeGeometrySelectorArrays(){
+
+//        ArrayList<ArrayGeometrySelector> agsCopy = new ArrayList<ArrayGeometrySelector>(geometrySelectors);
+//        System.out.println("Size " + geometrySelectors.size());
+//        for (ArrayGeometrySelector ags: geometrySelectors){
+//            ArrayGeometrySelector copy = new ArrayGeometrySelector();
+////
+//            for (ArrayGeometrySelector ags1: geometrySelectors) {
+//
+//                    boolean doBreak = false;
+//                if (!ags.equals(ags1)){
+//
+//                    for (GeometrySelector gs : ags.array) {
+//
+//                        for (GeometrySelector gs1 : ags1.array) {
+//
+//                            if (!gs.equals(gs1)) {
+//                                if (gs.getLocalTranslation().equals(gs1.getLocalTranslation())) {
+//                                    copy.array.add(gs1);
+//                                    //ags1.array.remove(gs1);
+//                                    doBreak = true;
+//                                    break;
+//                                    // agsCopy.remove(ags1);
+//                                }
+//                            }
+//                        }
+//
+//                    }
+//                    //ags1.array.clear();
+//                }
+//
+//
+//            }
+//            agsCopy.add(copy);
+//        }
+//        System.out.println("SIZE " + agsCopy.size());
+//    }
+
 
 //    public SuperCube genSuperCube(){
 //
@@ -86,386 +200,12 @@ public class Selector implements TouchListener {
 //        return superCube;
 //    }
 
-    public boolean scalerSelected = false;
-    public void addScaler(){
-
-        if (scaler != null){
-            //scaler = null;
-            App.getInstance().app.getRootNode().detachChild(scaleNode);
-        }
-        scalerSelected = false;
-            Box b = new Box(.1f, .1f, .1f);
-
-            Geometry geom = new Geometry("Scaler", b);
-
-            Material mat = new Material(App.getInstance().app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-            mat.setColor("Color", ColorRGBA.Orange);
-            geom.setMaterial(mat);
-            scaler = geom;
-            scaleNode.setLocalTranslation(center);
-            scaleNode.attachChild(scaler);
-            scaleNode.move(-1,1,-1);
-        App.getInstance().app.getRootNode().attachChild(scaleNode);
-    }
-
-    public void resetScaler(){
-        Material mat = new Material(App.getInstance().app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-        mat.setColor("Color", ColorRGBA.Orange);
-        scaler.setMaterial(mat);
-        scalerSelected = false;
-    }
-
-    public void populateMovers(){
-
-        adjustCenter();
-        Box b = new Box(.1f, .1f, .1f);
-        for (int i = 0; i < 6; i++) {
-            Geometry geom = new Geometry("Mover", b);
-
-            Material mat = new Material(App.getInstance().app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-            mat.setColor("Color", ColorRGBA.Red);
-            geom.setMaterial(mat);
-            if (i == 0) { //up
-                //moverDirection = "up";
-                geom.setName("Mover" + "Up");
-                geom.setLocalTranslation((new Vector3f(0,.33f, 0f)));
-            } else if (i == 1){ //down
-                //moverDirection = "down";
-                geom.setName("Mover" + "Down");
-                geom.setLocalTranslation( (new Vector3f(0,-.33f, 0f)));
-            } else if (i == 2){ //left
-               // moverDirection = "left";
-                geom.setName("Mover" + "Left");
-                geom.setLocalTranslation((new Vector3f(-.33f,0, 0f)));
-
-            }else if (i == 3){
-                geom.setName("Mover" + "Right");
-               // moverDirection = "right";
-                geom.setLocalTranslation( (new Vector3f(.33f,0, 0f)));
-
-            }else if (i == 4){//front
-                //moverDirection = "front";
-                geom.setName("Mover" + "Front");
-                geom.setLocalTranslation( (new Vector3f(0,0, .33f)));
-
-            }else if (i == 5){
-                //moverDirection = "down";
-                geom.setName("Mover" + "Back");
-                geom.setLocalTranslation( (new Vector3f(0,0, -.33f)));
-
-            }
-            movers.add(geom);
-            moveNode.attachChild(geom);
-        }
-        App.getInstance().app.getRootNode().attachChild(moveNode);
-
-    }
-
-
-    public void moveAllSelectedPoints() {
-        lastSelection.clear();
-        lastSelection.addAll(selected);
-        for (SuperMesh s : AppSuperMesh.getInstance().superMeshes.values()) {
-
-            for (SuperSurface ss : s.superMesh.values()) {
-                byte y = 0;
-                for (SuperLine sl : ss.currencyLines) {
-
-                    byte x = 0;
-                    for (Vector3f v : sl.points) {
-
-                        for (int g = 0; g < lastSelection.size(); g++) {
-                            if (lastSelection.get(g).getLocalTranslation().equals(v)) {
-                                ss.moveSuperLine(y, x, moveSpeed);
-                                // selected.get(g).move(moveSpeed);
-                            }
-                            //if (g.getLocalTranslation().distance(v) < 0.05f) {
-                            // ss.moveSuperLine((byte)y, (byte) x, new Vector3f(0f, .01f, 0f));
-                            //g.move(0f, .01f, 0f);
-                            // ss.updateSimpleMeshes();
-
-                            //    }
-                        }
-                        x++;
-                    }
-                    y++;
-                }
-                //  ss.updateSimpleMeshes();
-            }
-
-        }
-
-        //if (lastSelection.size() < selected.size()) {
-
-        //}
-
-//        for (SuperMesh s: AppSuperMesh.getInstance().superMeshes.values()){
-//
-//            for (SuperSurface ss: s.superMesh.values()){
-//                byte y = 0;
-//                for (SuperLine sl: ss.currencyLines){
-//
-//                    byte x = 0;
-//                    for (Vector3f v: sl.points){
-
-                        for (int g = 0; g < lastSelection.size(); g++) {
-                            if (lastSelection.get(g).getLocalTranslation().equals(selected.get(g).getLocalTranslation())){
-                                //ss.moveSuperLine(y,x, moveSpeed);
-                                selected.get(g).move(moveSpeed);
-                            }
-                        }
-                            //if (g.getLocalTranslation().distance(v) < 0.05f) {
-                            // ss.moveSuperLine((byte)y, (byte) x, new Vector3f(0f, .01f, 0f));
-                            //g.move(0f, .01f, 0f);
-                            // ss.updateSimpleMeshes();
-
-
-                       // }
-//                        }
-//                        x++;
-//                    }
-//                    y++;
-//                }
-//                //  ss.updateSimpleMeshes();
-//            }
-
-      //  }
-
-
-
-        //lastSelection.clear();
-        moveSpeed = new Vector3f();
-    }
-    public void move(String direction){
-
-
-//        for (Geometry g: selected){
-//            moveNode.attachChild(g);
-//        }
-        if (direction.equals("up")){
-            moveSpeed = moveSpeed.add(new Vector3f(0, .01f, 0));
-            moveNode.move(0,.01f,0f);
-
-        } else if (direction.equals("down")){
-
-            moveSpeed = moveSpeed.add(new Vector3f(0, -.01f, 0));
-            moveNode.move(0,-.01f,0f);
-        } else if (direction.equals("left")){
-            moveSpeed = moveSpeed.add(new Vector3f(-.01f, 0f, 0f));
-            moveNode.move(-.01f,0f,0f);
-        } else if (direction.equals("right")){
-            moveSpeed = moveSpeed.add(new Vector3f(.01f, 0f, 0f));
-            moveNode.move(.01f,0f,0f);
-        } else if (direction.equals("front")){
-            moveSpeed = moveSpeed.add(new Vector3f(0, 0f, .01f));
-            moveNode.move(0,0f,.01f);
-        } else if (direction.equals("back")){
-            moveSpeed = moveSpeed.add(new Vector3f(0, 0, -.01f));
-            moveNode.move(0,0f,-.01f);
-        }
-
-
-
-
-//        for (Geometry g: selected){
-//            moveNode.detachChild(g);
-//        }
-
-        //}
-
-
-    }
-
-    public void clearMovers(){
-        movers.clear();
-        moveNode.detachAllChildren();
-    }
-
-    public void showMovers(){
-        App.getInstance().app.getRootNode().attachChild(moveNode);
-    }
-
-    public void hideMovers(){
-        //movers.clear();
-        App.getInstance().app.getRootNode().detachChild(moveNode);
-    }
-
-    public void resetMovers(){
-
-        for (Geometry g: movers){
-            Material mat = new Material(App.getInstance().app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-            mat.setColor("Color", ColorRGBA.Red);
-            g.setMaterial(mat);
-        }
-    }
-
-    public void adjustCenter(){
-
-        center = new Vector3f();
-        if (!selected.isEmpty()){
-
-            int i = 0;
-            for (Geometry g: selected) {
-                if (i == 0) {
-                    center = g.getLocalTranslation();
-                } else {
-                    center = center.add(g.getLocalTranslation());
-                }
-                System.out.println("G" + g.getLocalTranslation());
-                i++;
-            }
-            center =  center.divide(selected.size());
-
-
-        } else {
-            center = new Vector3f();
-        }
-
-        moveNode.setLocalTranslation(center);
-        System.out.println("SIZE" + selected.size());
-        System.out.println("Center" + center);
-       // System.out.println );
-        //moveNode.setLocalTranslation(center);
-    }
-
-
-    public void populateSelectors(){
-
-
-
-            for (SuperMesh s: AppSuperMesh.getInstance().superMeshes.values()){
-
-                for (SuperSurface ss: s.superMesh.values()){
-
-                    for (SuperLine sl: ss.currencyLines){
-
-                        for (Vector3f v: sl.points){
-
-                            Box b = new Box(.1f, .1f, .1f);
-                            Geometry geom = new Geometry("Box" + s + ss + sl + v, b);
-
-                            Material mat = new Material(App.getInstance().app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-                            mat.setColor("Color", ColorRGBA.Red);
-                            geom.setMaterial(mat);
-                            geom.setLocalTranslation(v);
-
-                            boolean added = false;
-                            for (Geometry g: selectors){
-
-                                if (g.getLocalTranslation().equals(v)){
-                                    added = true;
-                                    break;
-                                }
-                            }
-
-
-                            if (!added) {
-                               selectorNode.attachChild(geom);
-                               selectors.add(geom);
-                            }
-
-                           // SuperCube superCube = genSuperCube();
-                           // superCube.superMesh.node.setLocalTranslation(new Vector3f(v));
-                           // selectors.add(superCube);
-
-                        }
-                    }
-                }
-
-            }
-           showSelectors();
-
-    }
-
-    public void showSelectors(){
-        App.getInstance().app.getRootNode().attachChild(selectorNode);
-        System.out.println("Selectors Size: " + selectors.size());
-
-    }
-
-    public void resetSelectors(){
-
-        Material mat = new Material(App.getInstance().app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-        mat.setColor("Color", ColorRGBA.Red);
-
-        for (Geometry g: selectors){
-            g.setMaterial(mat);
-        }
-        selected.clear();
-    }
-    public void clearSelectors(){
-
-
-        App.getInstance().app.getRootNode().detachChild(selectorNode);
-
-
-    }
-
-    public void moveAllSelectedPointsRelativeToCenter(){
-
-        lastSelection.clear();
-        lastSelection.addAll(selected);
-
-
-            for (Geometry g: selected){
-               // Vector3f totalPercentage = new Vector3f(((center.add(-1,1,-1).subtract(center.add(scaleNode.getLocalTranslation())))));
-
-                Vector3f startingPoint = center.add(-1,1,-1);
-                Vector3f totalPercentage = new Vector3f((startingPoint).subtract((scaleNode.getLocalTranslation())));
-
-                totalPercentage = totalPercentage.mult(1,-1,1);
-                System.out.println("TOTAL PERCENTAGE " + totalPercentage);
-
-//                Vector3f distanceFromCenter = g.getLocalTranslatinslation().add(center);
-                Vector3f total = new Vector3f(g.getLocalTranslation().subtract(center)).mult(totalPercentage);
-               // totalPercentage = totalPercentage.mult(-1);
-                g.move(total);
-            }
-
-        for (SuperMesh s : AppSuperMesh.getInstance().superMeshes.values()) {
-
-            for (SuperSurface ss : s.superMesh.values()) {
-                byte y = 0;
-                for (SuperLine sl : ss.currencyLines) {
-
-                    byte x = 0;
-                    for (Vector3f v : sl.points) {
-
-                        for (int g = 0; g < lastSelection.size(); g++) {
-                            if (lastSelection.get(g).getLocalTranslation().equals(v)) {
-                                ss.setSuperLine(y, x, selected.get(g).getLocalTranslation());
-                                // selected.get(g).move(moveSpeed);
-                            }
-                            //if (g.getLocalTranslation().distance(v) < 0.05f) {
-                            // ss.moveSuperLine((byte)y, (byte) x, new Vector3f(0f, .01f, 0f));
-                            //g.move(0f, .01f, 0f);
-                            // ss.updateSimpleMeshes();
-
-                            //    }
-                        }
-                        x++;
-                    }
-                    y++;
-                }
-                //  ss.updateSimpleMeshes();
-            }
-
-        }
-
-    }
-
-    Vector3f lastScalerLocation;
-    Vector3f scaleMovePercentage;
-    public void moveScaler(Vector3f percentage){
-        lastScalerLocation = new Vector3f(-1,1,-1);
-        scaleMovePercentage = new Vector3f(percentage);
-        scaleNode.move(percentage);
-
-    }
+    //public boolean scalerSelected = false;
 
 
     @Override
     public void onTouch(String name, TouchEvent event, float tpf) {
+    /**
         if (name.equals("MyTouch")) {
             switch (event.getType()) {
                 case DOWN:
@@ -718,4 +458,6 @@ public class Selector implements TouchListener {
             }
         }
     }
+     */
+}
 }

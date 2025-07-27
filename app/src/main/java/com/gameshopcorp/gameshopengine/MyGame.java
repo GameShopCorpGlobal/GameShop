@@ -61,7 +61,7 @@ public final class MyGame extends SimpleApplication {
         AppSuperMesh.getInstance().superMeshes.put("SuperCube", superCube.superMesh);
 
         Selector selector = new Selector();
-        selector.populateSelectors();
+        //selector.populateSelectors();
         //Node uiNode = new Node("UI Node");
       //  SuperSquare ui = new SuperSquare("UI", atms, uiNode, 2, new Vector3f(-1,-1,0), new Vector3f(1,-1,0), new Vector3f(-1,1,0), new Vector3f(1,1,0), tex );
 //
@@ -106,8 +106,8 @@ public final class MyGame extends SimpleApplication {
             public void onClick() {
                 super.onClick();
                 System.out.println("OMNI CLICKED");
-                selector.resetSelectors();
-                selector.clearMovers();
+//                selector.resetSelectors();
+//                selector.clearMovers();
             }
         };
 
@@ -117,8 +117,8 @@ public final class MyGame extends SimpleApplication {
             public void onClick() {
                 super.onClick();
                 System.out.println("OMNI CLICKED");
-                selector.clearSelectors();
-                selector.hideMovers();
+//                selector.clearSelectors();
+//                selector.hideMovers();
             }
         };
 
@@ -128,8 +128,8 @@ public final class MyGame extends SimpleApplication {
             public void onClick() {
                 super.onClick();
                 System.out.println("OMNI CLICKED");
-                selector.showSelectors();
-                selector.showMovers();
+//                selector.showSelectors();
+//                selector.showMovers();
             }
         };
 
