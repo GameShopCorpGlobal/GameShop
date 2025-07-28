@@ -56,6 +56,7 @@ public class Selector implements TouchListener {
     public static GeometryScaler geometryScaler;
     public static Node moveNode;
     public static Node lastMoveNode;
+    public static Vector3f center;
     public Selector() {
 
         moveNode = new Node("Move");
@@ -63,6 +64,12 @@ public class Selector implements TouchListener {
         selected = new ArrayList<>();
         geometrySelectors = new ArrayList<>();
         geometryMovers = new ArrayList<>();
+        geometryScaler = new GeometryScaler();
+        Box b = new Box(.1f, .1f, .1f);
+        //gs.setName("Box" + sm + s + sl + v);
+        geometryScaler.setMesh(b);
+        geometryScaler.deselect();
+        geometryScaler.setName("Scaler");
 //        selectorNode = new Node("Selector");
 //        moveNode = new Node("Mover");
 //        scaleNode = new Node("Scaler");
@@ -148,7 +155,7 @@ public class Selector implements TouchListener {
 
     public void populateMovers(){
 
-        Vector3f center = new Vector3f();
+        center = new Vector3f();
         int d = 0;
         for (ArrayGeometrySelector ags: selected){
             center = center.add(ags.array.get(0).getLocalTranslation());
@@ -204,6 +211,14 @@ public class Selector implements TouchListener {
         App.getInstance().app.getRootNode().attachChild(moveNode);
 
     }
+
+    public void makeScaler(){
+
+        geometryScaler.setLocalTranslation(moveNode.getLocalTranslation().add(-1,1,-1));
+       if(!App.getInstance().app.getRootNode().hasChild(geometryScaler)) {
+           App.getInstance().app.getRootNode().attachChild(geometryScaler);
+       }
+    }
 //        for ()
 
     public void clearMovers(){
@@ -242,6 +257,31 @@ public class Selector implements TouchListener {
 
     }
 
+    public void moveAllSelectedPointsRelativeToCenter(){
+
+        Vector3f startingPoint = moveNode.getLocalTranslation().add(-1,1,-1);
+        if (startingPoint.distance(geometryScaler.getLocalTranslation()) > 0.01f) {
+            Vector3f totalPercentage = new Vector3f((startingPoint).subtract((geometryScaler.getLocalTranslation())));
+            //Vector3f totalPercentage = new Vector3f((center.add(geometryScaler.getLocalTranslation()).divide(((center.add(-1,1,-1))))));
+
+            totalPercentage = totalPercentage.mult(1, -1, 1);
+
+            System.out.println("TOTAL PERCENTAGE " + totalPercentage);
+            for (ArrayGeometrySelector ags : selected) {
+                //ags.setGeometrySelectors();
+
+
+//                Vector3f distanceFromCenter = g.getLocalTranslatinslation().add(center);
+                Vector3f total = new Vector3f(ags.array.get(0).getLocalTranslation().subtract(moveNode.getLocalTranslation())).mult(totalPercentage);
+                // totalPercentage = totalPercentage.mult(-1);
+              //  total = new Vector3f(total.x, total.y, total.z * -1f);
+                //ags.setGeometrySelectors(ags.array.get(0).getLocalTranslation().add(total));
+
+                ags.move(total);
+            }
+        }
+    }
+
 
     @Override
     public void onTouch(String name, TouchEvent event, float tpf) {
@@ -265,10 +305,18 @@ public class Selector implements TouchListener {
 //                        s.update();
 //                    }
 //                    if (!movers.isEmpty()) {
-                    if (mover != null) {
+                    if (geometryScaler.selected){
+                        moveAllSelectedPointsRelativeToCenter();
                         moveAllSelectedPoints();
                     }
+                    if (mover != null) {
+                        moveAllSelectedPoints();
+                        if (geometryMovers.size() > 1) {
+                            makeScaler();
+                        }
+                    }
                     lastMoveNode.setLocalTranslation(moveNode.getLocalTranslation());
+
 
 //                        if (lastScalerLocation != null && scaleNode != null) {
 //                            if (scalerSelected) {
@@ -358,6 +406,7 @@ public class Selector implements TouchListener {
                                  //if (geometryMovers.isEmpty()){
                                 clearMovers();
                                 populateMovers();
+                                makeScaler();
                                  //}
 
 
@@ -378,6 +427,7 @@ public class Selector implements TouchListener {
 
                         if (target.getName().contains("Move")) {
 
+                            geometryScaler.deselect();
                             resetMovers();
                             target.select();
                             if (target instanceof GeometryMover) {
@@ -410,6 +460,8 @@ public class Selector implements TouchListener {
 //                            }
                         }
                         if (target.getName().contains("Scale")) {
+                            resetMovers();
+                            mover = null;
                             target.select();
                             //resetScaler();
 //                            resetMovers();
@@ -426,6 +478,15 @@ public class Selector implements TouchListener {
                     System.out.println("Tap detected at: " + event.getX() + ", " + event.getY());
                     break;
                 case SCROLL:
+                    if (geometryScaler.selected){
+                        if (event.getDeltaX() > 0){
+                            geometryScaler.move(0.01f, -0.01f, 0.01f);
+                        }
+                        if (event.getDeltaX() < 0){
+                            geometryScaler.move(-0.01f, 0.01f, -0.01f);
+
+                        }
+                    }
                     if (mover != null){
                            if (mover.getName().contains("Up")){
                             if (event.getDeltaX() > 0){

@@ -1,6 +1,9 @@
 package com.gameshopcorp.gameshopengine.ui;
 
+import com.gameshopcorp.gameshopengine.app.App;
 import com.gameshopcorp.gameshopengine.graphics.SuperSurface;
+import com.jme3.material.Material;
+import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Geometry;
 
 import java.util.ArrayList;
@@ -9,18 +12,25 @@ public class GeometryScaler extends Geometry implements Target {
 
     public ArrayList<GeometrySelector> selectors;
 
+    public boolean selected;
     public GeometryScaler() {
 
     }
 
     @Override
     public void select() {
-
+        selected = true;
+        Material mat = new Material(App.getInstance().app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+        mat.setColor("Color", ColorRGBA.Green);
+        setMaterial(mat);
     }
 
     @Override
     public void deselect() {
-
+        selected = false;
+        Material mat = new Material(App.getInstance().app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+        mat.setColor("Color", ColorRGBA.Orange);
+        setMaterial(mat);
     }
 }
     /*

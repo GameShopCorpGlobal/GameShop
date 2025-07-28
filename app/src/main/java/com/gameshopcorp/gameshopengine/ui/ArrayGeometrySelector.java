@@ -19,6 +19,12 @@ public class ArrayGeometrySelector {
         }
     }
 
+    public void move(Vector3f where){
+        for (GeometrySelector gs: array){
+            gs.move(where);
+        }
+    }
+
     public void setGeometrySelectors(Vector3f where){
 
         for (GeometrySelector gs: array){

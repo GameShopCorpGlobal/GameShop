@@ -44,17 +44,17 @@ public final class MyGame extends SimpleApplication {
         Texture2D tex = (Texture2D) assetManager.loadTexture("Textures/Rune.jpeg");
 
 
-        SuperSquare top = new SuperSquare("Display", atms, new Node("UI"), 7, new Vector3f(-3,3,-3), new Vector3f(3,3,-3), new Vector3f(-3,3,3), new Vector3f(3,3,3), null );
+        SuperSquare top = new SuperSquare("Display", atms, new Node("UI"), 8, new Vector3f(-3,3,-3), new Vector3f(3,3,-3), new Vector3f(-3,3,3), new Vector3f(3,3,3), null );
 
-        SuperSquare bottom = new SuperSquare("Display", atms, new Node("UI"), 7, new Vector3f(-3,-3,-3), new Vector3f(3,-3,-3), new Vector3f(-3,-3,3), new Vector3f(3,-3,3), null );
+        SuperSquare bottom = new SuperSquare("Display", atms, new Node("UI"), 8, new Vector3f(-3,-3,-3), new Vector3f(3,-3,-3), new Vector3f(-3,-3,3), new Vector3f(3,-3,3), null );
 
-        SuperSquare front = new SuperSquare("Display", atms, new Node("UI"), 7, new Vector3f(-3,-3,3), new Vector3f(3,-3,3), new Vector3f(-3,3,3), new Vector3f(3,3,3), null );
+        SuperSquare front = new SuperSquare("Display", atms, new Node("UI"), 8, new Vector3f(-3,-3,3), new Vector3f(3,-3,3), new Vector3f(-3,3,3), new Vector3f(3,3,3), null );
 
-        SuperSquare back = new SuperSquare("Display", atms, new Node("UI"), 7, new Vector3f(-3,-3,-3), new Vector3f(3,-3,-3), new Vector3f(-3,3,-3), new Vector3f(3,3,-3), null );
+        SuperSquare back = new SuperSquare("Display", atms, new Node("UI"), 8, new Vector3f(-3,-3,-3), new Vector3f(3,-3,-3), new Vector3f(-3,3,-3), new Vector3f(3,3,-3), null );
 
-        SuperSquare left = new SuperSquare("Display", atms, new Node("UI"), 7, new Vector3f(-3,-3,-3), new Vector3f(-3,-3,3), new Vector3f(-3,3,-3), new Vector3f(-3,3,3), null );
+        SuperSquare left = new SuperSquare("Display", atms, new Node("UI"), 8, new Vector3f(-3,-3,-3), new Vector3f(-3,-3,3), new Vector3f(-3,3,-3), new Vector3f(-3,3,3), null );
 
-        SuperSquare right = new SuperSquare("Display", atms, new Node("UI"), 7, new Vector3f(3,-3,-3), new Vector3f(3,-3,3), new Vector3f(3,3,-3), new Vector3f(3,3,3), null );
+        SuperSquare right = new SuperSquare("Display", atms, new Node("UI"), 8, new Vector3f(3,-3,-3), new Vector3f(3,-3,3), new Vector3f(3,3,-3), new Vector3f(3,3,3), null );
 
         SuperCube superCube = new SuperCube(top, bottom, front, back, left, right);
 
