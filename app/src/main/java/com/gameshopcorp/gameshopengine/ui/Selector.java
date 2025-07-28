@@ -51,6 +51,8 @@ public class Selector implements TouchListener {
     public ArrayList<ArrayGeometrySelector> geometrySelectors;
     public static ArrayList<ArrayGeometrySelector> selected;
     public static ArrayList<GeometryMover> geometryMovers;
+
+    public static GeometryMover mover;
     public static GeometryScaler geometryScaler;
     public static Node moveNode;
     public Selector() {
@@ -152,46 +154,48 @@ public class Selector implements TouchListener {
            center = center.divide(d);
         }
         moveNode.setLocalTranslation(center);
-        for (int i = 0; i < 6; i++) {
-            GeometryMover geom = new GeometryMover();
-            Box b = new Box(.1f, .1f, .1f);
-            //gs.setName("Box" + sm + s + sl + v);
-            geom.setMesh(b);
-            geom.deselect();
+        if (geometryMovers.isEmpty()) {
+            for (int i = 0; i < 6; i++) {
+                GeometryMover geom = new GeometryMover();
+                Box b = new Box(.1f, .1f, .1f);
+                //gs.setName("Box" + sm + s + sl + v);
+                geom.setMesh(b);
+                geom.deselect();
 
-            if (i == 0) { //up
-                //moverDirection = "up";
-                //geom.moveDirection = "up";
-                geom.setName("Mover" + "Up");
-                geom.setLocalTranslation((new Vector3f(0,.33f, 0f)));
-            } else if (i == 1){ //down
-                //moverDirection = "down";
-               // geom.moveDirection = "up";
-                geom.setName("Mover" + "Down");
-                geom.setLocalTranslation( (new Vector3f(0,-.33f, 0f)));
-            } else if (i == 2){ //left
-                // moverDirection = "left";
-                geom.setName("Mover" + "Left");
-                geom.setLocalTranslation((new Vector3f(-.33f,0, 0f)));
+                if (i == 0) { //up
+                    //moverDirection = "up";
+                    //geom.moveDirection = "up";
+                    geom.setName("Mover" + "Up");
+                    geom.setLocalTranslation((new Vector3f(0, .33f, 0f)));
+                } else if (i == 1) { //down
+                    //moverDirection = "down";
+                    // geom.moveDirection = "up";
+                    geom.setName("Mover" + "Down");
+                    geom.setLocalTranslation((new Vector3f(0, -.33f, 0f)));
+                } else if (i == 2) { //left
+                    // moverDirection = "left";
+                    geom.setName("Mover" + "Left");
+                    geom.setLocalTranslation((new Vector3f(-.33f, 0, 0f)));
 
-            }else if (i == 3){
-                geom.setName("Mover" + "Right");
-                // moverDirection = "right";
-                geom.setLocalTranslation( (new Vector3f(.33f,0, 0f)));
+                } else if (i == 3) {
+                    geom.setName("Mover" + "Right");
+                    // moverDirection = "right";
+                    geom.setLocalTranslation((new Vector3f(.33f, 0, 0f)));
 
-            }else if (i == 4){//front
-                //moverDirection = "front";
-                geom.setName("Mover" + "Front");
-                geom.setLocalTranslation( (new Vector3f(0,0, .33f)));
+                } else if (i == 4) {//front
+                    //moverDirection = "front";
+                    geom.setName("Mover" + "Front");
+                    geom.setLocalTranslation((new Vector3f(0, 0, .33f)));
 
-            }else if (i == 5){
-                //moverDirection = "down";
-                geom.setName("Mover" + "Back");
-                geom.setLocalTranslation( (new Vector3f(0,0, -.33f)));
+                } else if (i == 5) {
+                    //moverDirection = "down";
+                    geom.setName("Mover" + "Back");
+                    geom.setLocalTranslation((new Vector3f(0, 0, -.33f)));
 
+                }
+                geometryMovers.add(geom);
+                moveNode.attachChild(geom);
             }
-            geometryMovers.add(geom);
-            moveNode.attachChild(geom);
         }
         App.getInstance().app.getRootNode().attachChild(moveNode);
 
@@ -200,10 +204,19 @@ public class Selector implements TouchListener {
 
     public void clearMovers(){
 
-       // for (GeometryMover g: geometryMovers){
+        resetMovers();
+
             App.getInstance().app.getRootNode().detachChild(moveNode);
-            geometryMovers.clear();
+            //geometryMovers.clear();
        // }
+    }
+
+    public void resetMovers(){
+        for (GeometryMover g: geometryMovers) {
+            g.deselect();
+        }
+        mover = null;
+
     }
 
 
@@ -324,8 +337,8 @@ public class Selector implements TouchListener {
                                     addSelectors((GeometrySelector) target);
                                 }
                                  //if (geometryMovers.isEmpty()){
-                                    clearMovers();
-                                     populateMovers();
+                                clearMovers();
+                                populateMovers();
                                  //}
 
 
@@ -346,7 +359,11 @@ public class Selector implements TouchListener {
 
                         if (target.getName().contains("Move")) {
 
+                            resetMovers();
                             target.select();
+                            if (target instanceof GeometryMover) {
+                                mover = (GeometryMover) target;
+                            }
 //                            resetMovers();
 //                            resetScaler();
 //                            Material mat = new Material(App.getInstance().app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
@@ -390,6 +407,56 @@ public class Selector implements TouchListener {
                     System.out.println("Tap detected at: " + event.getX() + ", " + event.getY());
                     break;
                 case SCROLL:
+                    if (mover != null){
+                        if (mover.getName().contains("Up")){
+                            if (event.getDeltaX() > 0){
+                                moveNode.move(0,0.01f,0);
+                            }
+                            if (event.getDeltaX() < 0){
+                                moveNode.move(0,-0.01f,0);
+                            }
+                        }
+                        if (mover.getName().contains("Down")){
+                            if (event.getDeltaX() > 0){
+                                moveNode.move(0,0.01f,0);
+                            }
+                            if (event.getDeltaX() < 0){
+                                moveNode.move(0,-0.01f,0);
+                            }
+                        }
+                        if (mover.getName().contains("Left")){
+                            if (event.getDeltaX() > 0){
+                                moveNode.move(0.01f,0 ,0);
+                            }
+                            if (event.getDeltaX() < 0){
+                                moveNode.move(-0.01f,0,0);
+                            }
+                        }
+                        if (mover.getName().contains("Right")){
+                            if (event.getDeltaX() > 0){
+                                moveNode.move(0.01f,0 ,0);
+                            }
+                            if (event.getDeltaX() < 0){
+                                moveNode.move(-0.01f,0,0);
+                            }
+                        }
+                        if (mover.getName().contains("Front")){
+                            if (event.getDeltaX() > 0){
+                                moveNode.move(0,0 ,0.01f);
+                            }
+                            if (event.getDeltaX() < 0){
+                                moveNode.move(0,0,-0.01f);
+                            }
+                        }
+                        if (mover.getName().contains("Back")){
+                            if (event.getDeltaX() > 0){
+                                moveNode.move(0,0 ,0.01f);
+                            }
+                            if (event.getDeltaX() < 0){
+                                moveNode.move(0,0,-0.01f);
+                            }
+                        }
+                    }
 //                    if (scalerSelected){
 //
 //                        Vector3f movePercentage = new Vector3f();
