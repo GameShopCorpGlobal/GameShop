@@ -30,8 +30,8 @@ public final class MyGame extends SimpleApplication {
 
     @Override
     public void simpleInitApp() {
-       // this.setDisplayFps(false);
-       // this.setDisplayStatView(false);
+        this.setDisplayFps(false);
+        this.setDisplayStatView(false);
         App.getInstance().app = this;
 
         flyCam.setEnabled(true);
@@ -109,6 +109,7 @@ public final class MyGame extends SimpleApplication {
                 System.out.println("OMNI CLICKED");
 //                selector.resetSelectors();
 //                selector.clearMovers();
+                selector.resetSelectors();
             }
         };
 
@@ -120,6 +121,7 @@ public final class MyGame extends SimpleApplication {
                 System.out.println("OMNI CLICKED");
 //                selector.clearSelectors();
 //                selector.hideMovers();
+                selector.hideSelectors();
             }
         };
 
@@ -131,6 +133,7 @@ public final class MyGame extends SimpleApplication {
                 System.out.println("OMNI CLICKED");
 //                selector.showSelectors();
 //                selector.showMovers();
+                selector.showSelectors();
             }
         };
 

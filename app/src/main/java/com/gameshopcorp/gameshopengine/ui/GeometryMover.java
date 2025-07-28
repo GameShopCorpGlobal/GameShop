@@ -16,6 +16,7 @@ public class GeometryMover extends Geometry implements Target {
     //Center
    // public ArrayList<ArrayGeometrySelector> selectors;
     //public Vector3f center;
+    public boolean selected = false;
     public String moveDirection;// up down left right front back
 
     public GeometryMover() {
@@ -28,6 +29,7 @@ public class GeometryMover extends Geometry implements Target {
         Material mat = new Material(App.getInstance().app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         mat.setColor("Color", ColorRGBA.Blue);
         setMaterial(mat);
+        selected = true;
     }
 
     @Override
@@ -36,6 +38,7 @@ public class GeometryMover extends Geometry implements Target {
         Material mat = new Material(App.getInstance().app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         mat.setColor("Color", ColorRGBA.Red);
         setMaterial(mat);
+        selected = false;
     }
 }
     /*
