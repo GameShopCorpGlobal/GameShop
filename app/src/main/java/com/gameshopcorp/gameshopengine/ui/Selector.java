@@ -55,9 +55,11 @@ public class Selector implements TouchListener {
     public static GeometryMover mover;
     public static GeometryScaler geometryScaler;
     public static Node moveNode;
+    public static Node lastMoveNode;
     public Selector() {
 
         moveNode = new Node("Move");
+        lastMoveNode = new Node("LastMoveNode");
         selected = new ArrayList<>();
         geometrySelectors = new ArrayList<>();
         geometryMovers = new ArrayList<>();
@@ -123,8 +125,10 @@ public class Selector implements TouchListener {
 
                         }
 
+                        column++;
                        // geometrySelectors.add(ags);
                     }
+                    row++;
                 }
 
             }
@@ -227,6 +231,15 @@ public class Selector implements TouchListener {
                 selected.add(ags);
             }
         }
+        //System.out.println("Selected " + selected.size());
+    }
+
+    public void moveAllSelectedPoints(){
+
+        for (ArrayGeometrySelector ags: selected){
+            ags.setGeometrySelectors(ags.array.get(0).getLocalTranslation().add(moveNode.getLocalTranslation().subtract(lastMoveNode.getLocalTranslation())));
+        }
+
     }
 
 
@@ -246,11 +259,17 @@ public class Selector implements TouchListener {
                     // ... (rest of your picking logic)
                     break;
                 case UP:
+
+
 //                    for (SuperMesh s: AppSuperMesh.getInstance().superMeshes.values()){
 //                        s.update();
 //                    }
 //                    if (!movers.isEmpty()) {
-//                        moveAllSelectedPoints();
+                    if (mover != null) {
+                        moveAllSelectedPoints();
+                    }
+                    lastMoveNode.setLocalTranslation(moveNode.getLocalTranslation());
+
 //                        if (lastScalerLocation != null && scaleNode != null) {
 //                            if (scalerSelected) {
 //                                //if (center.distance(lastScalerLocation) < center.distance(scaleNode.getLocalTranslation())) {
@@ -408,7 +427,7 @@ public class Selector implements TouchListener {
                     break;
                 case SCROLL:
                     if (mover != null){
-                        if (mover.getName().contains("Up")){
+                           if (mover.getName().contains("Up")){
                             if (event.getDeltaX() > 0){
                                 moveNode.move(0,0.01f,0);
                             }

@@ -30,8 +30,8 @@ public final class MyGame extends SimpleApplication {
 
     @Override
     public void simpleInitApp() {
-        this.setDisplayFps(false);
-        this.setDisplayStatView(false);
+       // this.setDisplayFps(false);
+       // this.setDisplayStatView(false);
         App.getInstance().app = this;
 
         flyCam.setEnabled(true);
@@ -59,6 +59,7 @@ public final class MyGame extends SimpleApplication {
         SuperCube superCube = new SuperCube(top, bottom, front, back, left, right);
 
         AppSuperMesh.getInstance().superMeshes.put("SuperCube", superCube.superMesh);
+
 
         Selector selector = new Selector();
         //selector.populateSelectors();

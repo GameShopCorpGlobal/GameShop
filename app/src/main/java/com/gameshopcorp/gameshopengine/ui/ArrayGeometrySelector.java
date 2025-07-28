@@ -13,11 +13,21 @@ public class ArrayGeometrySelector {
 
     }
 
-
-
     public void setSuperLines(Vector3f where){
         for (GeometrySelector gs: array){
             gs.setSuperLine(where);
         }
+    }
+
+    public void setGeometrySelectors(Vector3f where){
+
+        for (GeometrySelector gs: array){
+            System.out.println("Last Location " + gs.getLocalTranslation());
+            gs.setLocalTranslation(where);
+            System.out.println("New Location " + gs.getLocalTranslation());
+
+            gs.setSuperLine(where);
+        }
+
     }
 }
