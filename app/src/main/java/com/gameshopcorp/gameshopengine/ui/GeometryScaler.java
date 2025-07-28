@@ -1,14 +1,25 @@
 package com.gameshopcorp.gameshopengine.ui;
 
 import com.gameshopcorp.gameshopengine.graphics.SuperSurface;
+import com.jme3.scene.Geometry;
 
 import java.util.ArrayList;
 
-public class GeometryScaler {
+public class GeometryScaler extends Geometry implements Target {
 
     public ArrayList<GeometrySelector> selectors;
 
     public GeometryScaler() {
+
+    }
+
+    @Override
+    public void select() {
+
+    }
+
+    @Override
+    public void deselect() {
 
     }
 }

@@ -49,10 +49,14 @@ public class Selector implements TouchListener {
      */
 
     public ArrayList<ArrayGeometrySelector> geometrySelectors;
-    public ArrayList<GeometryMover> geometryMovers;
-    public GeometryScaler geometryScaler;
+    public static ArrayList<ArrayGeometrySelector> selected;
+    public static ArrayList<GeometryMover> geometryMovers;
+    public static GeometryScaler geometryScaler;
+    public static Node moveNode;
     public Selector() {
 
+        moveNode = new Node("Move");
+        selected = new ArrayList<>();
         geometrySelectors = new ArrayList<>();
         geometryMovers = new ArrayList<>();
 //        selectorNode = new Node("Selector");
@@ -91,9 +95,7 @@ public class Selector implements TouchListener {
                         gs.setName("Box" + sm + s + sl + v);
                         gs.setMesh(b);
 
-                        Material mat = new Material(App.getInstance().app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-                        mat.setColor("Color", ColorRGBA.Red);
-                        gs.setMaterial(mat);
+                        gs.deselect();
                         gs.setLocalTranslation(v);
 
 
@@ -138,74 +140,87 @@ public class Selector implements TouchListener {
 
     }
 
-    //public void mergeGeometrySelectorArrays(){
+    public void populateMovers(){
 
-//        ArrayList<ArrayGeometrySelector> agsCopy = new ArrayList<ArrayGeometrySelector>(geometrySelectors);
-//        System.out.println("Size " + geometrySelectors.size());
-//        for (ArrayGeometrySelector ags: geometrySelectors){
-//            ArrayGeometrySelector copy = new ArrayGeometrySelector();
-////
-//            for (ArrayGeometrySelector ags1: geometrySelectors) {
-//
-//                    boolean doBreak = false;
-//                if (!ags.equals(ags1)){
-//
-//                    for (GeometrySelector gs : ags.array) {
-//
-//                        for (GeometrySelector gs1 : ags1.array) {
-//
-//                            if (!gs.equals(gs1)) {
-//                                if (gs.getLocalTranslation().equals(gs1.getLocalTranslation())) {
-//                                    copy.array.add(gs1);
-//                                    //ags1.array.remove(gs1);
-//                                    doBreak = true;
-//                                    break;
-//                                    // agsCopy.remove(ags1);
-//                                }
-//                            }
-//                        }
-//
-//                    }
-//                    //ags1.array.clear();
-//                }
-//
-//
-//            }
-//            agsCopy.add(copy);
-//        }
-//        System.out.println("SIZE " + agsCopy.size());
-//    }
+        Vector3f center = new Vector3f();
+        int d = 0;
+        for (ArrayGeometrySelector ags: selected){
+            center = center.add(ags.array.get(0).getLocalTranslation());
+        d++;
+        }
+        if (d > 0) {
+           center = center.divide(d);
+        }
+        moveNode.setLocalTranslation(center);
+        for (int i = 0; i < 6; i++) {
+            GeometryMover geom = new GeometryMover();
+            Box b = new Box(.1f, .1f, .1f);
+            //gs.setName("Box" + sm + s + sl + v);
+            geom.setMesh(b);
+            geom.deselect();
+
+            if (i == 0) { //up
+                //moverDirection = "up";
+                //geom.moveDirection = "up";
+                geom.setName("Mover" + "Up");
+                geom.setLocalTranslation((new Vector3f(0,.33f, 0f)));
+            } else if (i == 1){ //down
+                //moverDirection = "down";
+               // geom.moveDirection = "up";
+                geom.setName("Mover" + "Down");
+                geom.setLocalTranslation( (new Vector3f(0,-.33f, 0f)));
+            } else if (i == 2){ //left
+                // moverDirection = "left";
+                geom.setName("Mover" + "Left");
+                geom.setLocalTranslation((new Vector3f(-.33f,0, 0f)));
+
+            }else if (i == 3){
+                geom.setName("Mover" + "Right");
+                // moverDirection = "right";
+                geom.setLocalTranslation( (new Vector3f(.33f,0, 0f)));
+
+            }else if (i == 4){//front
+                //moverDirection = "front";
+                geom.setName("Mover" + "Front");
+                geom.setLocalTranslation( (new Vector3f(0,0, .33f)));
+
+            }else if (i == 5){
+                //moverDirection = "down";
+                geom.setName("Mover" + "Back");
+                geom.setLocalTranslation( (new Vector3f(0,0, -.33f)));
+
+            }
+            geometryMovers.add(geom);
+            moveNode.attachChild(geom);
+        }
+        App.getInstance().app.getRootNode().attachChild(moveNode);
+
+    }
+//        for ()
+
+    public void clearMovers(){
+
+       // for (GeometryMover g: geometryMovers){
+            App.getInstance().app.getRootNode().detachChild(moveNode);
+            geometryMovers.clear();
+       // }
+    }
 
 
-//    public SuperCube genSuperCube(){
-//
-//        ATMS atms = new ATMS("Selector", 256, 256);
-//        atms.layer.drawCircle(128,128,256, new Vector4f(255,0,0,128));
-//
-//        SuperSquare top = new SuperSquare("Display", atms, new Node("UI"), 2, new Vector3f(-3,3,-3), new Vector3f(3,3,-3), new Vector3f(-3,3,3), new Vector3f(3,3,3), null );
-//
-//        SuperSquare bottom = new SuperSquare("Display", atms, new Node("UI"), 2, new Vector3f(-3,-3,-3), new Vector3f(3,-3,-3), new Vector3f(-3,-3,3), new Vector3f(3,-3,3), null );
-//
-//        SuperSquare front = new SuperSquare("Display", atms, new Node("UI"), 2, new Vector3f(-3,-3,3), new Vector3f(3,-3,3), new Vector3f(-3,3,3), new Vector3f(3,3,3), null );
-//        //front.node.scale(-1,1,1);
-//        SuperSquare back = new SuperSquare("Display", atms, new Node("UI"), 2, new Vector3f(-3,-3,-3), new Vector3f(3,-3,-3), new Vector3f(-3,3,-3), new Vector3f(3,3,-3), null );
-//
-//        SuperSquare left = new SuperSquare("Display", atms, new Node("UI"), 2, new Vector3f(-3,-3,-3), new Vector3f(-3,-3,3), new Vector3f(-3,3,-3), new Vector3f(-3,3,3), null );
-//
-//        SuperSquare right = new SuperSquare("Display", atms, new Node("UI"), 2, new Vector3f(3,-3,-3), new Vector3f(3,-3,3), new Vector3f(3,3,-3), new Vector3f(3,3,3), null );
-//
-//        SuperCube superCube = new SuperCube(top, bottom, front, back, left, right);
-//
-//        superCube.superMesh.node.scale(.33f);
-//        return superCube;
-//    }
+    public void addSelectors(GeometrySelector add){
 
-    //public boolean scalerSelected = false;
+        for (ArrayGeometrySelector ags: geometrySelectors){
+            if (ags.array.contains(add)){
+                selected.add(ags);
+            }
+        }
+    }
 
 
     @Override
     public void onTouch(String name, TouchEvent event, float tpf) {
-    /**
+
+
         if (name.equals("MyTouch")) {
             switch (event.getType()) {
                 case DOWN:
@@ -221,23 +236,23 @@ public class Selector implements TouchListener {
 //                    for (SuperMesh s: AppSuperMesh.getInstance().superMeshes.values()){
 //                        s.update();
 //                    }
-                    if (!movers.isEmpty()) {
-                        moveAllSelectedPoints();
-                        if (lastScalerLocation != null && scaleNode != null) {
-                            if (scalerSelected) {
-                                //if (center.distance(lastScalerLocation) < center.distance(scaleNode.getLocalTranslation())) {
-
-                                moveAllSelectedPointsRelativeToCenter();
-//                           }
+//                    if (!movers.isEmpty()) {
+//                        moveAllSelectedPoints();
+//                        if (lastScalerLocation != null && scaleNode != null) {
+//                            if (scalerSelected) {
+//                                //if (center.distance(lastScalerLocation) < center.distance(scaleNode.getLocalTranslation())) {
 //
-//                           if (center.distance(lastScalerLocation) > center.distance(scaleNode.getLocalTranslation())) {
-//
-//                               moveAllSelectedPointsRelativeToCenter();
-//                           }
-                            }
-                        }
-                    }
-                    resetMovers();
+//                                moveAllSelectedPointsRelativeToCenter();
+////                           }
+////
+////                           if (center.distance(lastScalerLocation) > center.distance(scaleNode.getLocalTranslation())) {
+////
+////                               moveAllSelectedPointsRelativeToCenter();
+////                           }
+//                            }
+//                        }
+//                    }
+//                    resetMovers();
 
 
                     // Handle touch up event
@@ -280,14 +295,23 @@ public class Selector implements TouchListener {
                     // Use the results -- we rotate the selected geometry.
                     if (results.size() > 0) {
                         // The closest result is the target that the player picked:
-                        Geometry target = null;
+                        Target target = null;
+
                         for (int i = 0; i < results.size(); i++) {
                             String targetName = results.getCollision(i).getGeometry().getName();
 
                             if (!targetName.contains("Box") && !targetName.contains("Move") && !targetName.contains("Scale")) {
                                 continue;
                             }
-                            target = results.getCollision(i).getGeometry();
+                            if (targetName.contains("Box")) {
+                                target = (GeometrySelector) results.getCollision(i).getGeometry();
+                            }
+                            if (targetName.contains("Move")) {
+                                target = (GeometryMover) results.getCollision(i).getGeometry();
+                            }
+                            if (targetName.contains("Scale")) {
+                                target = (GeometryScaler) results.getCollision(i).getGeometry();
+                            }
                             break;
                         }
                         if (target != null){
@@ -295,57 +319,69 @@ public class Selector implements TouchListener {
                             // Here comes the action:
                             if (target.getName().contains("Box")) {
 
-                                Material mat = new Material(App.getInstance().app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-                                mat.setColor("Color", ColorRGBA.Blue);
-                                target.setMaterial(mat);
-                                selected.add(target);
-                                if (movers.isEmpty()) {
-                                    populateMovers();
-                                } else {
-                                    adjustCenter();
-                                    if (selected.size() > 1) {
-                                        addScaler();
-                                    }
+                                 target.select();
+                                if (target instanceof GeometrySelector) {
+                                    addSelectors((GeometrySelector) target);
                                 }
-                                //target.rotate(0, -5f, 0);
+                                 //if (geometryMovers.isEmpty()){
+                                    clearMovers();
+                                     populateMovers();
+                                 //}
+
+
+//                                Material mat = new Material(App.getInstance().app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+//                                mat.setColor("Color", ColorRGBA.Blue);
+//                                target.setMaterial(mat);
+//                                selected.add(target);
+//                                if (movers.isEmpty()) {
+//                                    populateMovers();
+//                                } else {
+//                                    adjustCenter();
+//                                    if (selected.size() > 1) {
+//                                        addScaler();
+//                                    }
+//                                }
+//                                //target.rotate(0, -5f, 0);
                             }
 
                         if (target.getName().contains("Move")) {
 
-                            resetMovers();
-                            resetScaler();
-                            Material mat = new Material(App.getInstance().app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-                            mat.setColor("Color", ColorRGBA.Blue);
-                            target.setMaterial(mat);
+                            target.select();
+//                            resetMovers();
+//                            resetScaler();
+//                            Material mat = new Material(App.getInstance().app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+//                            mat.setColor("Color", ColorRGBA.Blue);
+//                            target.setMaterial(mat);
                             //selected.add(target);
-                            selectedMover = target;
-                            if (target.getName().contains("Up")) {
-                                moverDirection = "up";
-                            }
-                            if (target.getName().contains("Down")) {
-                                moverDirection = "down";
-                            }
-                            if (target.getName().contains("Left")) {
-                                moverDirection = "left";
-                            }
-                            if (target.getName().contains("Right")) {
-                                moverDirection = "right";
-                            }
-                            if (target.getName().contains("Front")) {
-                                moverDirection = "front";
-                            }
-                            if (target.getName().contains("Back")) {
-                                moverDirection = "back";
-                            }
+//                            selectedMover = target;
+//                            if (target.getName().contains("Up")) {
+//                                moverDirection = "up";
+//                            }
+//                            if (target.getName().contains("Down")) {
+//                                moverDirection = "down";
+//                            }
+//                            if (target.getName().contains("Left")) {
+//                                moverDirection = "left";
+//                            }
+//                            if (target.getName().contains("Right")) {
+//                                moverDirection = "right";
+//                            }
+//                            if (target.getName().contains("Front")) {
+//                                moverDirection = "front";
+//                            }
+//                            if (target.getName().contains("Back")) {
+//                                moverDirection = "back";
+//                            }
                         }
                         if (target.getName().contains("Scale")) {
+                            target.select();
                             //resetScaler();
-                            resetMovers();
-                            Material mat = new Material(App.getInstance().app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-                            mat.setColor("Color", ColorRGBA.Green);
-                            scaler.setMaterial(mat);
-                            scalerSelected = true;
-                            System.out.println("SELECTED SCALE");
+//                            resetMovers();
+//                            Material mat = new Material(App.getInstance().app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+//                            mat.setColor("Color", ColorRGBA.Green);
+//                            scaler.setMaterial(mat);
+//                            scalerSelected = true;
+//                            System.out.println("SELECTED SCALE");
                         }
                     }
                     }
@@ -354,110 +390,111 @@ public class Selector implements TouchListener {
                     System.out.println("Tap detected at: " + event.getX() + ", " + event.getY());
                     break;
                 case SCROLL:
-                    if (scalerSelected){
-
-                        Vector3f movePercentage = new Vector3f();
-                        if (event.getDeltaX() > 0){
-                            if (scaleNode.getLocalTranslation().x > center.x){
-                                movePercentage.setX(-0.01f);
-                            } else if (scaleNode.getLocalTranslation().x < center.x)  {
-                                movePercentage.setX(0.01f);
-                            }
-
-                            if (scaleNode.getLocalTranslation().y > center.y){
-                                movePercentage.setY(-0.01f);
-                            } else if (scaleNode.getLocalTranslation().y < center.y)  {
-                                movePercentage.setY(0.01f);
-                            }
-
-                            if (scaleNode.getLocalTranslation().z > center.z){
-                                movePercentage.setZ(-0.01f);
-                            } else if (scaleNode.getLocalTranslation().z < center.z)  {
-                                movePercentage.setZ(0.01f);
-                            }
-
-
-//                           moveScaler()
-                            // moveAllSelectedPointsRelativeToCenter(true);
-                        } else {
-                            if (scaleNode.getLocalTranslation().x > center.x){
-                                movePercentage.setX(0.01f);
-                            } else if (scaleNode.getLocalTranslation().x < center.x)  {
-                                movePercentage.setX(-0.01f);
-                            }
-
-                            if (scaleNode.getLocalTranslation().y > center.y){
-                                movePercentage.setY(0.01f);
-
-                            } else if (scaleNode.getLocalTranslation().y < center.y)  {
-                                movePercentage.setY(-0.01f);
-
-                            }
-
-                            if (scaleNode.getLocalTranslation().z > center.z){
-                                movePercentage.setZ(0.01f);
-
-                            } else if (scaleNode.getLocalTranslation().z < center.z)  {
-                                movePercentage.setZ(-0.01f);
-
-                            }
-                            //moveAllSelectedPointsRelativeToCenter(false);
-                        }
-                        moveScaler(movePercentage);
-                    }
-                    if (selectedMover != null){
-                        if (moverDirection.equals("up")){
-                            if (event.getDeltaY() > 0f){
-                                move("up");
-                            } else if (event.getDeltaY() < 0f){
-                                move("down");
-                            }
-                        }
-                        if (moverDirection.equals("down")){
-                            if (event.getDeltaY() > 0f){
-                                move("up");
-                            } else if (event.getDeltaY() < 0f){
-                                move("down");
-                            }
-                        }
-                        if (moverDirection.equals("front")){
-                            if (event.getDeltaX() < 0f){
-                                move("back");
-                            } else if (event.getDeltaX() > 0f){
-                                move("front");
-                            }
-                        }
-                        if (moverDirection.equals("back")){
-                            if (event.getDeltaX() < 0f){
-                                move("back");
-                            } else if (event.getDeltaX() > 0f){
-                                move("front");
-                            }
-                        }
-                        if (moverDirection.equals("left")){
-                            if (event.getDeltaX() > 0f){
-                                move("right");
-                            } else if (event.getDeltaX() < 0f){
-                                move("left");
-                            }
-                        }
-                        if (moverDirection.equals("right")){
-                            if (event.getDeltaX() > 0f){
-                                move("right");
-                            } else if (event.getDeltaX() < 0f){
-                                move("left");
-                            }
-                        }
-                    }
-
-
-                    // Handle a scroll gesture
-                    System.out.println("Scroll detected. Scale Span: " + event.getScaleSpan() + ", Delta Scale Span: " + event.getDeltaScaleSpan());
-                    break;
+//                    if (scalerSelected){
+//
+//                        Vector3f movePercentage = new Vector3f();
+//                        if (event.getDeltaX() > 0){
+//                            if (scaleNode.getLocalTranslation().x > center.x){
+//                                movePercentage.setX(-0.01f);
+//                            } else if (scaleNode.getLocalTranslation().x < center.x)  {
+//                                movePercentage.setX(0.01f);
+//                            }
+//
+//                            if (scaleNode.getLocalTranslation().y > center.y){
+//                                movePercentage.setY(-0.01f);
+//                            } else if (scaleNode.getLocalTranslation().y < center.y)  {
+//                                movePercentage.setY(0.01f);
+//                            }
+//
+//                            if (scaleNode.getLocalTranslation().z > center.z){
+//                                movePercentage.setZ(-0.01f);
+//                            } else if (scaleNode.getLocalTranslation().z < center.z)  {
+//                                movePercentage.setZ(0.01f);
+//                            }
+//
+//
+////                           moveScaler()
+//                            // moveAllSelectedPointsRelativeToCenter(true);
+//                        } else {
+//                            if (scaleNode.getLocalTranslation().x > center.x){
+//                                movePercentage.setX(0.01f);
+//                            } else if (scaleNode.getLocalTranslation().x < center.x)  {
+//                                movePercentage.setX(-0.01f);
+//                            }
+//
+//                            if (scaleNode.getLocalTranslation().y > center.y){
+//                                movePercentage.setY(0.01f);
+//
+//                            } else if (scaleNode.getLocalTranslation().y < center.y)  {
+//                                movePercentage.setY(-0.01f);
+//
+//                            }
+//
+//                            if (scaleNode.getLocalTranslation().z > center.z){
+//                                movePercentage.setZ(0.01f);
+//
+//                            } else if (scaleNode.getLocalTranslation().z < center.z)  {
+//                                movePercentage.setZ(-0.01f);
+//
+//                            }
+//                            //moveAllSelectedPointsRelativeToCenter(false);
+//                        }
+//                        moveScaler(movePercentage);
+//                    }
+//                    if (selectedMover != null){
+//                        if (moverDirection.equals("up")){
+//                            if (event.getDeltaY() > 0f){
+//                                move("up");
+//                            } else if (event.getDeltaY() < 0f){
+//                                move("down");
+//                            }
+//                        }
+//                        if (moverDirection.equals("down")){
+//                            if (event.getDeltaY() > 0f){
+//                                move("up");
+//                            } else if (event.getDeltaY() < 0f){
+//                                move("down");
+//                            }
+//                        }
+//                        if (moverDirection.equals("front")){
+//                            if (event.getDeltaX() < 0f){
+//                                move("back");
+//                            } else if (event.getDeltaX() > 0f){
+//                                move("front");
+//                            }
+//                        }
+//                        if (moverDirection.equals("back")){
+//                            if (event.getDeltaX() < 0f){
+//                                move("back");
+//                            } else if (event.getDeltaX() > 0f){
+//                                move("front");
+//                            }
+//                        }
+//                        if (moverDirection.equals("left")){
+//                            if (event.getDeltaX() > 0f){
+//                                move("right");
+//                            } else if (event.getDeltaX() < 0f){
+//                                move("left");
+//                            }
+//                        }
+//                        if (moverDirection.equals("right")){
+//                            if (event.getDeltaX() > 0f){
+//                                move("right");
+//                            } else if (event.getDeltaX() < 0f){
+//                                move("left");
+//                            }
+//                        }
+//                    }
+//
+//
+//                    // Handle a scroll gesture
+//                    System.out.println("Scroll detected. Scale Span: " + event.getScaleSpan() + ", Delta Scale Span: " + event.getDeltaScaleSpan());
+//                    break;
                 // You can add more cases for other TouchEvent types (e.g., SCALE_START, SCALE_MOVE, SCALE_END)
-            }
+            //}
         }
     }
-     */
+
 }
 }
+

@@ -1,24 +1,42 @@
 package com.gameshopcorp.gameshopengine.ui;
 
+import com.gameshopcorp.gameshopengine.app.App;
 import com.gameshopcorp.gameshopengine.graphics.SuperSurface;
+import com.jme3.material.Material;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 
 import java.util.ArrayList;
 
-public class GeometryMover extends Geometry {
+public class GeometryMover extends Geometry implements Target {
 
     //selected Geometries;
     //Center
-    public ArrayList<GeometrySelector> selectors;
-    public Vector3f center;
+   // public ArrayList<ArrayGeometrySelector> selectors;
+    //public Vector3f center;
     public String moveDirection;// up down left right front back
 
     public GeometryMover() {
 
     }
 
+    @Override
+    public void select() {
+
+        Material mat = new Material(App.getInstance().app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+        mat.setColor("Color", ColorRGBA.Blue);
+        setMaterial(mat);
+    }
+
+    @Override
+    public void deselect() {
+
+        Material mat = new Material(App.getInstance().app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+        mat.setColor("Color", ColorRGBA.Red);
+        setMaterial(mat);
+    }
 }
     /*
     public void populateMovers(){

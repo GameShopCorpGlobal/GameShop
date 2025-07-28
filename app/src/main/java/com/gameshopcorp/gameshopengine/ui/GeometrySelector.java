@@ -1,10 +1,13 @@
 package com.gameshopcorp.gameshopengine.ui;
 
+import com.gameshopcorp.gameshopengine.app.App;
 import com.gameshopcorp.gameshopengine.graphics.SuperSurface;
+import com.jme3.material.Material;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 
-public class GeometrySelector extends Geometry {
+public class GeometrySelector extends Geometry implements Target {
 
 
     public SuperSurface superSurface;
@@ -25,6 +28,18 @@ public class GeometrySelector extends Geometry {
     public void setSuperLine(Vector3f where){
         superSurface.setSuperLine(row, column, where);
 
+    }
+
+    public void select(){
+        Material mat = new Material(App.getInstance().app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+        mat.setColor("Color", ColorRGBA.Blue);
+        setMaterial(mat);
+    }
+
+    public void deselect(){
+        Material mat = new Material(App.getInstance().app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+        mat.setColor("Color", ColorRGBA.Red);
+        setMaterial(mat);
     }
 }
     /*
