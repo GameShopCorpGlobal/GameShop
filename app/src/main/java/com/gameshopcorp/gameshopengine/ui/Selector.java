@@ -466,8 +466,8 @@ public class Selector implements TouchListener {
                             Vector2f cp = g.simpleMesh.get2DContactPointFrom3D(pt);
                             Vector2f positionOnSurface = g.superSurface.getVector2FromSimpleMesh(g.simpleMesh);
                             System.out.println("Surface: " + positionOnSurface);
-                            float pointX = ((positionOnSurface.x * g.superSurface.atms.width) + cp.x)/g.superSurface.maxX;
-                            float pointY = ((positionOnSurface.y * g.superSurface.atms.height) + cp.y)/g.superSurface.maxY;
+                            float pointX = ((positionOnSurface.x) * g.superSurface.atms.width)/g.superSurface.maxX;
+                            float pointY = ((positionOnSurface.y) * g.superSurface.atms.height)/g.superSurface.maxY;
 
                             System.out.println("XY" + pointX + " " + pointY);
                             g.superSurface.atms.layer.drawCircle((int) pointX, (int) pointY, (int) App.getInstance().app.radius.x, App.getInstance().app.paintColor);

@@ -64,21 +64,31 @@ public class SuperSurface {
 
     public Vector2f getVector2FromSimpleMesh(SimpleMesh sm) {
 
-        Vector2f vector2f = new Vector2f();
+        //Vector2f vector2f = new Vector2f();
+
+        float x = 0;
+        float y = 0;
 
         for (SimpleMesh simpleMesh : simpleMeshes) {
-            if (vector2f.x == maxX) {
-
-                vector2f.setX(0);
-                vector2f.setY(vector2f.getY() + 1f);
+//            if (vector2f.x == maxX) {
+//
+//                vector2f.setX(0);
+//                vector2f.setY(vector2f.getY() + 1f);
+//            }
+            if (x > maxX){
+                x = 0;
+                y++;
             }
             if (sm != null){
                 if ((sm).equals(simpleMesh)) {
 
-                    return vector2f;
+                    return new Vector2f(x, y);
+                    //return vector2f;
                 }
         }
-        vector2f.setX(vector2f.getX() + 1f);
+            x++;
+
+       // vector2f.setX(vector2f.getX() + 1f);
     }
 
         return new Vector2f();

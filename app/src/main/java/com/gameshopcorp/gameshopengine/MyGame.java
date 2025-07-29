@@ -47,22 +47,33 @@ public final class MyGame extends SimpleApplication {
 
         //radius = 10f;
 
-        ATMS atms = new ATMS("BlueBox", 256, 256);
-        atms.layer.drawCircle(128,128,256, new Vector4f(0,0,255,128));
+        ATMS atmsTop = new ATMS("BlueBox", 256, 256);
+        atmsTop.layer.drawCircle(128,128,256, new Vector4f(0,0,255,128));
+        ATMS atmsBottom = new ATMS("BlueBox", 256, 256);
+        atmsBottom.layer.drawCircle(128,128,256, new Vector4f(0,0,255,128));
+        ATMS atmsFront = new ATMS("BlueBox", 256, 256);
+        atmsFront.layer.drawCircle(128,128,256, new Vector4f(0,0,255,128));
+        ATMS atmsBack = new ATMS("BlueBox", 256, 256);
+        atmsBack.layer.drawCircle(128,128,256, new Vector4f(0,0,255,128));
+        ATMS atmsLeft = new ATMS("BlueBox", 256, 256);
+        atmsLeft.layer.drawCircle(128,128,256, new Vector4f(0,0,255,128));
+        ATMS atmsRight = new ATMS("BlueBox", 256, 256);
+        atmsRight.layer.drawCircle(128,128,256, new Vector4f(0,0,255,128));
+
         Texture2D tex = (Texture2D) assetManager.loadTexture("Textures/Rune.jpeg");
 
 
-        SuperSquare top = new SuperSquare("Display", atms, new Node("UI"), 8, new Vector3f(-3,3,-3), new Vector3f(3,3,-3), new Vector3f(-3,3,3), new Vector3f(3,3,3), null );
+        SuperSquare top = new SuperSquare("Display", atmsTop, new Node("UI"), 8, new Vector3f(-3,3,-3), new Vector3f(3,3,-3), new Vector3f(-3,3,3), new Vector3f(3,3,3), null );
 
-        SuperSquare bottom = new SuperSquare("Display", atms, new Node("UI"), 8, new Vector3f(-3,-3,-3), new Vector3f(3,-3,-3), new Vector3f(-3,-3,3), new Vector3f(3,-3,3), null );
+        SuperSquare bottom = new SuperSquare("Display", atmsBottom, new Node("UI"), 8, new Vector3f(-3,-3,-3), new Vector3f(3,-3,-3), new Vector3f(-3,-3,3), new Vector3f(3,-3,3), null );
 
-        SuperSquare front = new SuperSquare("Display", atms, new Node("UI"), 8, new Vector3f(-3,-3,3), new Vector3f(3,-3,3), new Vector3f(-3,3,3), new Vector3f(3,3,3), null );
+        SuperSquare front = new SuperSquare("Display", atmsFront, new Node("UI"), 8, new Vector3f(-3,-3,3), new Vector3f(3,-3,3), new Vector3f(-3,3,3), new Vector3f(3,3,3), null );
 
-        SuperSquare back = new SuperSquare("Display", atms, new Node("UI"), 8, new Vector3f(-3,-3,-3), new Vector3f(3,-3,-3), new Vector3f(-3,3,-3), new Vector3f(3,3,-3), null );
+        SuperSquare back = new SuperSquare("Display", atmsBack, new Node("UI"), 8, new Vector3f(-3,-3,-3), new Vector3f(3,-3,-3), new Vector3f(-3,3,-3), new Vector3f(3,3,-3), null );
 
-        SuperSquare left = new SuperSquare("Display", atms, new Node("UI"), 8, new Vector3f(-3,-3,-3), new Vector3f(-3,-3,3), new Vector3f(-3,3,-3), new Vector3f(-3,3,3), null );
+        SuperSquare left = new SuperSquare("Display", atmsLeft, new Node("UI"), 8, new Vector3f(-3,-3,-3), new Vector3f(-3,-3,3), new Vector3f(-3,3,-3), new Vector3f(-3,3,3), null );
 
-        SuperSquare right = new SuperSquare("Display", atms, new Node("UI"), 8, new Vector3f(3,-3,-3), new Vector3f(3,-3,3), new Vector3f(3,3,-3), new Vector3f(3,3,3), null );
+        SuperSquare right = new SuperSquare("Display", atmsRight, new Node("UI"), 8, new Vector3f(3,-3,-3), new Vector3f(3,-3,3), new Vector3f(3,3,-3), new Vector3f(3,3,3), null );
 
         SuperCube superCube = new SuperCube(top, bottom, front, back, left, right);
 
