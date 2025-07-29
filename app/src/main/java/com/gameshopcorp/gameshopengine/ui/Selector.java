@@ -339,6 +339,7 @@ public class Selector implements TouchListener {
                         moveAllSelectedPointsRelativeToCenter();
                         moveAllSelectedPoints();
                         geometryScaler.deselect();
+                        makeScaler();
                     }
                     if (mover.selected) {
                         moveAllSelectedPoints();
