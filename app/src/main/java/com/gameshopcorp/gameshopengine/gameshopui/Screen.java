@@ -19,12 +19,13 @@ public class Screen {
 
         for (Omni o: omnis){
             if (position.x > o.start.x && position.x < o.end.x && position.y > o.start.y && position.y < o.end.y){
-                o.onClick();
+                o.onClick(position);
             }
         }
     }
 
     public void draw(){
+        onDraw();
 
         for (Omni o: omnis){
             o.draw();
@@ -35,5 +36,9 @@ public class Screen {
         for (Omni o: omnis){
             o.detachNode();
         }
+    }
+
+    public void onDraw(){
+
     }
 }

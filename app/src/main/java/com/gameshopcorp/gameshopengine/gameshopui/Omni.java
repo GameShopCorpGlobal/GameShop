@@ -6,6 +6,7 @@ import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
 import com.jme3.math.Vector2f;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import com.jme3.texture.Texture2D;
 import com.jme3.ui.Picture;
 
@@ -38,6 +39,7 @@ public class Omni {
         node.attachChild(pic);
 
         drawText();
+        detachNode();
         attachNode();
        // drawContainer();
     }
@@ -57,8 +59,15 @@ public class Omni {
         BitmapText helloText = new BitmapText(guiFont);
         helloText.setSize(guiFont.getCharSet().getRenderedSize());
         helloText.setText(text);
-        helloText.setLocalTranslation(((start.x + end.x)/2f) -((start.x + end.x)/16f)  , ((start.y + end.y)/2f) , 0);
-       node.attachChild(helloText);
+        helloText.setLocalTranslation(((start.x + end.x)/2f) - 25  , ((start.y + end.y)/2f) , 0);
+       //if (node.hasChild(helloText)) {
+        for (Spatial s: node.getChildren()){
+            if (s instanceof BitmapText){
+                node.detachChild(s);
+            }
+        }
+        node.attachChild(helloText);
+       //}
        // App.getInstance().app.getGuiNode().attachChild(helloText);
 
     }
@@ -75,7 +84,7 @@ public class Omni {
 //
 //    }
 
-    public void onClick(){
+    public void onClick(Vector2f position){
 
     }
 //    public void onClick(Vector2f position){
