@@ -2,6 +2,7 @@ package com.gameshopcorp.gameshopengine.ui;
 
 import com.gameshopcorp.gameshopengine.app.App;
 import com.gameshopcorp.gameshopengine.app.AppSuperMesh;
+import com.gameshopcorp.gameshopengine.graphics.SimpleGeometry;
 import com.gameshopcorp.gameshopengine.graphics.SuperLine;
 import com.gameshopcorp.gameshopengine.graphics.SuperMesh;
 import com.gameshopcorp.gameshopengine.graphics.SuperSurface;
@@ -335,22 +336,24 @@ public class Selector implements TouchListener {
 //                        s.update();
 //                    }
 //                    if (!movers.isEmpty()) {
-                    if (geometryScaler.selected){
-                        moveAllSelectedPointsRelativeToCenter();
-                        moveAllSelectedPoints();
-                        geometryScaler.deselect();
-                        makeScaler();
-                    }
-                    if (mover.selected) {
-                        moveAllSelectedPoints();
-                        if (selected.size() > 1) {
+                    if (App.getInstance().app.screenContainer.selectedScreen.equals("uiScreen")) {
+
+                        if (geometryScaler.selected) {
+                            moveAllSelectedPointsRelativeToCenter();
+                            moveAllSelectedPoints();
+                            geometryScaler.deselect();
                             makeScaler();
                         }
+                        if (mover.selected) {
+                            moveAllSelectedPoints();
+                            if (selected.size() > 1) {
+                                makeScaler();
+                            }
+                        }
+                        lastMoveNode.setLocalTranslation(moveNode.getLocalTranslation());
+                    } else if (App.getInstance().app.screenContainer.selectedScreen.equals("uiScreenATMS")) {
+
                     }
-                    lastMoveNode.setLocalTranslation(moveNode.getLocalTranslation());
-
-
-
 
                     // Handle touch up event
                     System.out.println("Touch Up at: " + event.getX() + ", " + event.getY());
@@ -389,131 +392,161 @@ public class Selector implements TouchListener {
 //                        }
                         System.out.println("Selection #" + i + ": " + target + " at " + pt + ", " + dist + " WU away.");
                     }
-                    // Use the results -- we rotate the selected geometry.
-                    if (results.size() > 0) {
-                        // The closest result is the target that the player picked:
-                        Target target = null;
 
-                        for (int i = 0; i < results.size(); i++) {
-                            String targetName = results.getCollision(i).getGeometry().getName();
+                    if (App.getInstance().app.screenContainer.selectedScreen.equals("uiScreen")) {
 
-                            if (!targetName.contains("Box") && !targetName.contains("Move") && !targetName.contains("Scale")) {
-                                continue;
-                            }
-                            if (targetName.contains("Box")) {
-                                target = (GeometrySelector) results.getCollision(i).getGeometry();
-                            }
-                            if (targetName.contains("Move")) {
-                                target = (GeometryMover) results.getCollision(i).getGeometry();
-                            }
-                            if (targetName.contains("Scale")) {
-                                target = (GeometryScaler) results.getCollision(i).getGeometry();
-                            }
-                            break;
-                        }
-                        if (target != null){
-                            //forresults.getClosestCollision().getGeometry();
-                            // Here comes the action:
-                            if (target.getName().contains("Box")) {
 
-                                 target.select();
-                                if (target instanceof GeometrySelector) {
-                                    addSelectors((GeometrySelector) target);
+                        // Use the results -- we rotate the selected geometry.
+                        if (results.size() > 0) {
+                            // The closest result is the target that the player picked:
+                            Target target = null;
+
+                            for (int i = 0; i < results.size(); i++) {
+                                String targetName = results.getCollision(i).getGeometry().getName();
+
+                                if (!targetName.contains("Box") && !targetName.contains("Move") && !targetName.contains("Scale")) {
+                                    continue;
                                 }
-                                 //if (geometryMovers.isEmpty()){
-                                clearMovers();
-                                populateMovers();
-                                if (selected.size() > 1) {
-                                    makeScaler();
+                                if (targetName.contains("Box")) {
+                                    target = (GeometrySelector) results.getCollision(i).getGeometry();
+                                }
+                                if (targetName.contains("Move")) {
+                                    target = (GeometryMover) results.getCollision(i).getGeometry();
+                                }
+                                if (targetName.contains("Scale")) {
+                                    target = (GeometryScaler) results.getCollision(i).getGeometry();
+                                }
+                                break;
+                            }
+                            if (target != null) {
+                                //forresults.getClosestCollision().getGeometry();
+                                // Here comes the action:
+                                if (target.getName().contains("Box")) {
+
+                                    target.select();
+                                    if (target instanceof GeometrySelector) {
+                                        addSelectors((GeometrySelector) target);
+                                    }
+                                    //if (geometryMovers.isEmpty()){
+                                    clearMovers();
+                                    populateMovers();
+                                    if (selected.size() > 1) {
+                                        makeScaler();
+                                    }
+
+
                                 }
 
+                                if (target.getName().contains("Move")) {
 
+                                    geometryScaler.deselect();
+                                    resetMovers();
+                                    target.select();
+                                    if (target instanceof GeometryMover) {
+                                        mover = (GeometryMover) target;
+                                    }
+
+                                }
+                                if (target.getName().contains("Scale")) {
+                                    resetMovers();
+                                    mover.deselect();
+                                    target.select();
+
+                                }
                             }
-
-                        if (target.getName().contains("Move")) {
-
-                            geometryScaler.deselect();
-                            resetMovers();
-                            target.select();
-                            if (target instanceof GeometryMover) {
-                                mover = (GeometryMover) target;
-                            }
-
                         }
-                        if (target.getName().contains("Scale")) {
-                            resetMovers();
-                            mover.deselect();
-                            target.select();
+                    } else if (App.getInstance().app.screenContainer.selectedScreen.equals("uiScreenATMS")) {
+                        if (results.size() > 0) {
 
+                            SimpleGeometry g = (SimpleGeometry) results.getClosestCollision().getGeometry();
+                            if (g.simpleMesh != null && g.superSurface != null){
+
+
+                            Vector3f pt = results.getClosestCollision().getContactPoint();
+                            Vector2f cp = g.simpleMesh.get2DContactPointFrom3D(pt);
+                            Vector2f positionOnSurface = g.superSurface.getVector2FromSimpleMesh(g.simpleMesh);
+                            System.out.println("Surface: " + positionOnSurface);
+                            float pointX = ((positionOnSurface.x * g.superSurface.atms.width) + cp.x)/g.superSurface.maxX;
+                            float pointY = ((positionOnSurface.y * g.superSurface.atms.height) + cp.y)/g.superSurface.maxY;
+
+                            System.out.println("XY" + pointX + " " + pointY);
+                            g.superSurface.atms.layer.drawCircle((int) pointX, (int) pointY, (int) App.getInstance().app.radius.x, App.getInstance().app.paintColor);
+                            g.superSurface.updateSimpleMeshes();
                         }
-                    }
+                        }
+                        // g.superSurface.atms.layer.drawCircle();
                     }
 
                     // Handle a tap gesture
                     System.out.println("Tap detected at: " + event.getX() + ", " + event.getY());
                     break;
                 case SCROLL:
-                    if (geometryScaler.selected){
-                        if (event.getDeltaX() > 0){
-                            geometryScaler.move(0.01f, -0.01f, 0.01f);
-                        }
-                        if (event.getDeltaX() < 0){
-                            geometryScaler.move(-0.01f, 0.01f, -0.01f);
+                    if (App.getInstance().app.screenContainer.selectedScreen.equals("uiScreen")) {
 
+                        if (geometryScaler.selected) {
+                            if (event.getDeltaX() > 0) {
+                                geometryScaler.move(0.01f, -0.01f, 0.01f);
+                            }
+                            if (event.getDeltaX() < 0) {
+                                geometryScaler.move(-0.01f, 0.01f, -0.01f);
+
+                            }
                         }
+                        if (mover.selected) {
+                            if (mover.getName().contains("Up")) {
+                                if (event.getDeltaX() > 0) {
+                                    moveNode.move(0, 0.01f, 0);
+                                }
+                                if (event.getDeltaX() < 0) {
+                                    moveNode.move(0, -0.01f, 0);
+                                }
+                            }
+                            if (mover.getName().contains("Down")) {
+                                if (event.getDeltaX() > 0) {
+                                    moveNode.move(0, 0.01f, 0);
+                                }
+                                if (event.getDeltaX() < 0) {
+                                    moveNode.move(0, -0.01f, 0);
+                                }
+                            }
+                            if (mover.getName().contains("Left")) {
+                                if (event.getDeltaX() > 0) {
+                                    moveNode.move(0.01f, 0, 0);
+                                }
+                                if (event.getDeltaX() < 0) {
+                                    moveNode.move(-0.01f, 0, 0);
+                                }
+                            }
+                            if (mover.getName().contains("Right")) {
+                                if (event.getDeltaX() > 0) {
+                                    moveNode.move(0.01f, 0, 0);
+                                }
+                                if (event.getDeltaX() < 0) {
+                                    moveNode.move(-0.01f, 0, 0);
+                                }
+                            }
+                            if (mover.getName().contains("Front")) {
+                                if (event.getDeltaX() > 0) {
+                                    moveNode.move(0, 0, 0.01f);
+                                }
+                                if (event.getDeltaX() < 0) {
+                                    moveNode.move(0, 0, -0.01f);
+                                }
+                            }
+                            if (mover.getName().contains("Back")) {
+                                if (event.getDeltaX() > 0) {
+                                    moveNode.move(0, 0, 0.01f);
+                                }
+                                if (event.getDeltaX() < 0) {
+                                    moveNode.move(0, 0, -0.01f);
+                                }
+                            }
+                        }
+                    } else if (App.getInstance().app.screenContainer.selectedScreen.equals("uiScreenATMS")) {
+
                     }
-                    if (mover.selected){
-                           if (mover.getName().contains("Up")){
-                            if (event.getDeltaX() > 0){
-                                moveNode.move(0,0.01f,0);
-                            }
-                            if (event.getDeltaX() < 0){
-                                moveNode.move(0,-0.01f,0);
-                            }
-                        }
-                        if (mover.getName().contains("Down")){
-                            if (event.getDeltaX() > 0){
-                                moveNode.move(0,0.01f,0);
-                            }
-                            if (event.getDeltaX() < 0){
-                                moveNode.move(0,-0.01f,0);
-                            }
-                        }
-                        if (mover.getName().contains("Left")){
-                            if (event.getDeltaX() > 0){
-                                moveNode.move(0.01f,0 ,0);
-                            }
-                            if (event.getDeltaX() < 0){
-                                moveNode.move(-0.01f,0,0);
-                            }
-                        }
-                        if (mover.getName().contains("Right")){
-                            if (event.getDeltaX() > 0){
-                                moveNode.move(0.01f,0 ,0);
-                            }
-                            if (event.getDeltaX() < 0){
-                                moveNode.move(-0.01f,0,0);
-                            }
-                        }
-                        if (mover.getName().contains("Front")){
-                            if (event.getDeltaX() > 0){
-                                moveNode.move(0,0 ,0.01f);
-                            }
-                            if (event.getDeltaX() < 0){
-                                moveNode.move(0,0,-0.01f);
-                            }
-                        }
-                        if (mover.getName().contains("Back")){
-                            if (event.getDeltaX() > 0){
-                                moveNode.move(0,0 ,0.01f);
-                            }
-                            if (event.getDeltaX() < 0){
-                                moveNode.move(0,0,-0.01f);
-                            }
-                        }
-                    }
+            }
         }
-    }
 
 }
 }

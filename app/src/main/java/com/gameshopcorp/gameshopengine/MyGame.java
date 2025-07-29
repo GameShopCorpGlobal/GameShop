@@ -29,6 +29,8 @@ public final class MyGame extends SimpleApplication {
     public NiftyJmeDisplay niftyDisplay;
     //public Screen uiScreen;
     public ScreenContainer screenContainer;
+    public Vector2f radius;
+    public Vector4f paintColor;
     //public float radius;
     @Override
     public void simpleInitApp() {
@@ -210,7 +212,7 @@ public final class MyGame extends SimpleApplication {
             f += 50f;
         }
 
-        Vector4f paintColor = new Vector4f(0,0,255,128);
+        paintColor = new Vector4f(0,0,255,128);
 
         ATMS atmsPaint = new ATMS("ATMSPaint", 128,128);
         atmsPaint.layer.drawCircle(64,64,128, new Vector4f(255,255,255,255));
@@ -233,7 +235,7 @@ public final class MyGame extends SimpleApplication {
         atmsSliderAlpha.layer.drawLine(new Vector2f(5,47), new Vector2f(250,47), (short) 5, new Vector4f(128,128,128,255));
         atmsSliderAlpha.layer.drawCircle((int) paintColor.w, 47, (short)25, new Vector4f(0,0,255,255));
 
-         Vector2f radius = new Vector2f(10f, 0f);
+        radius = new Vector2f(10f, 0f);
         ATMS atmsSliderRadius = new ATMS("ATMSPaint", 255,100);
         atmsSliderRadius.layer.drawLine(new Vector2f(5,47), new Vector2f(250,47), (short) 5, new Vector4f(128,128,128,255));
         atmsSliderRadius.layer.drawCircle((int) radius.x, 47, (short)25, new Vector4f(0,0,255,255));

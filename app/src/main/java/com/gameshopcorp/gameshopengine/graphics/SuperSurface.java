@@ -62,6 +62,28 @@ public class SuperSurface {
         return  simpleMeshes[(this.vInfinitesimals[0].infinitesimals.length * x) + y];
     }
 
+    public Vector2f getVector2FromSimpleMesh(SimpleMesh sm) {
+
+        Vector2f vector2f = new Vector2f();
+
+        for (SimpleMesh simpleMesh : simpleMeshes) {
+            if (vector2f.x == maxX) {
+
+                vector2f.setX(0);
+                vector2f.setY(vector2f.getY() + 1f);
+            }
+            if (sm != null){
+                if ((sm).equals(simpleMesh)) {
+
+                    return vector2f;
+                }
+        }
+        vector2f.setX(vector2f.getX() + 1f);
+    }
+
+        return new Vector2f();
+    }
+
     public void setSuperLine(byte line, byte point, Vector3f newPoint){
         this.currencyLines[line].setSuperLine(point, newPoint);
         for (int i = 0; i < this.vInfinitesimals.length; i++){
@@ -236,7 +258,7 @@ public class SuperSurface {
 //                    texCoord[3] = new Vector2f((float) x / maxX, (float) y / maxY);
 //
 //                }
-                simpleMeshes[(this.vInfinitesimals[0].infinitesimals.length * y) + x] = new SimpleMesh(simpleMesh, texCoord, getTexture2D(), node);
+                simpleMeshes[(this.vInfinitesimals[0].infinitesimals.length * y) + x] = new SimpleMesh(this,simpleMesh, texCoord, getTexture2D(), node);
 
             }
         }

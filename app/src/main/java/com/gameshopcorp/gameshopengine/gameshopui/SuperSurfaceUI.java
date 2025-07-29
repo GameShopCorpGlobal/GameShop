@@ -83,7 +83,7 @@ public class SuperSurfaceUI extends SuperSurface {
 //                    texCoord[3] = new Vector2f((float) x / maxX, (float) y / maxY);
 //
 //                }
-                simpleMeshes[(this.vInfinitesimals[0].infinitesimals.length * y) + x] = new SimpleMeshUI(simpleMesh, texCoord, getTexture2D(), node);
+                simpleMeshes[(this.vInfinitesimals[0].infinitesimals.length * y) + x] = new SimpleMeshUI(this, simpleMesh, texCoord, getTexture2D(), node);
 
             }
         }

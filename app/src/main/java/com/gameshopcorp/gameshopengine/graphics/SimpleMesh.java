@@ -19,12 +19,12 @@ public class SimpleMesh {
 
     public Mesh m;
 
-    public Geometry geom;
+    public SimpleGeometry geom;
 
     public Material mat;
 
     public Texture2D texture;
-    public SimpleMesh(Vector3f[] vertices, Vector2f[] texCoord, Texture2D texture, Node node){
+    public SimpleMesh(SuperSurface superSurface, Vector3f[] vertices, Vector2f[] texCoord, Texture2D texture, Node node){
 
         this.texture = texture;
 
@@ -66,8 +66,10 @@ public class SimpleMesh {
         // *************************************************************************
 
         // Creating a geometry, and apply a single color material to it
-        this.geom = new Geometry("OurMesh", m);
+        this.geom = new SimpleGeometry(superSurface, this);
 
+        this.geom.setMesh(m);
+        this.geom.setName("OurMesh");
 
         mat = new Material(App.getInstance().app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         mat.getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.Off);
@@ -84,5 +86,82 @@ public class SimpleMesh {
         // Attaching our geometry to the root node.
         //app.getRootNode().attachChild(geom);
         node.attachChild(geom);
+    }
+
+    public Vector2f get2DContactPointFrom3D(Vector3f contactPoint){
+
+        //x/z , y/z
+
+//        Vector3f midpoint = new Vector3f(vertices[0].add(vertices[1].add(vertices[2].add(vertices[3])))).divide(4);
+//
+//        float distanceNear = vertices[0].distance(contactPoint);
+//        float distanceFar = vertices[3].distance(contactPoint);
+
+
+        Vector3f distanceNearAxis = new Vector3f(contactPoint.x - vertices[0].x, contactPoint.y - vertices[0].y, contactPoint.z - vertices[0].z);
+        //Vector3f distanceFarAxis = new Vector3f(vertices[3].x - contactPoint.x, vertices[3].y - contactPoint.y, vertices[3].z - contactPoint.z);
+
+        Vector3f distanceAxis = new Vector3f(vertices[3].x - vertices[0].x, vertices[3].y - vertices[0].y, vertices[3].z - vertices[0].z);
+
+        Vector3f totalPercentage = distanceNearAxis.divide(distanceAxis);
+
+        String highestVal = "x";
+        if (distanceAxis.y > distanceAxis.x){
+            highestVal = "y";
+        }
+        if (distanceAxis.z > distanceAxis.y){
+            highestVal = "z";
+        }
+        String lowestVal = "x";
+        if (distanceAxis.y < distanceAxis.x){
+            lowestVal = "y";
+        }
+        if (distanceAxis.z < distanceAxis.y){
+            lowestVal = "z";
+        }
+        String midVal = "xyz";
+       midVal = midVal.replace(highestVal, "");
+       midVal = midVal.replace(lowestVal, "");
+
+        Vector2f point = new Vector2f();
+       if (highestVal.equals("x")){
+           if (midVal.equals("y")){
+               point = new Vector2f(totalPercentage.x, totalPercentage.y);
+           }
+       }
+        if (highestVal.equals("x")){
+            if (midVal.equals("z")){
+                point = new Vector2f(totalPercentage.x, totalPercentage.z);
+
+            }
+        }
+        if (highestVal.equals("y")){
+            if (midVal.equals("x")){
+                point = new Vector2f(totalPercentage.y, totalPercentage.x);
+
+            }
+        }
+        if (highestVal.equals("y")){
+            if (midVal.equals("z")){
+                point = new Vector2f(totalPercentage.y, totalPercentage.z);
+
+            }
+        }
+        if (highestVal.equals("z")){
+            if (midVal.equals("x")){
+                point = new Vector2f(totalPercentage.z, totalPercentage.x);
+
+            }
+        }
+        if (highestVal.equals("z")){
+            if (midVal.equals("y")){
+                point = new Vector2f(totalPercentage.z, totalPercentage.y);
+
+            }
+        }
+
+        System.out.println(point);
+        //x2 + y2 + z2 = s2
+        return point;
     }
 }

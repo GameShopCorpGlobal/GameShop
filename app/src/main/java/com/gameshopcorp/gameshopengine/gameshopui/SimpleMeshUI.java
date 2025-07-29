@@ -1,7 +1,10 @@
 package com.gameshopcorp.gameshopengine.gameshopui;
 
 import com.gameshopcorp.gameshopengine.app.App;
+import com.gameshopcorp.gameshopengine.graphics.SimpleGeometry;
 import com.gameshopcorp.gameshopengine.graphics.SimpleMesh;
+import com.gameshopcorp.gameshopengine.graphics.SuperMesh;
+import com.gameshopcorp.gameshopengine.graphics.SuperSurface;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
@@ -13,8 +16,8 @@ import com.jme3.scene.Node;
 import com.jme3.texture.Texture2D;
 
 public class SimpleMeshUI extends SimpleMesh {
-    public SimpleMeshUI(Vector3f[] vertices, Vector2f[] texCoord, Texture2D texture, Node node) {
-        super(vertices, texCoord, texture, node);
+    public SimpleMeshUI(SuperSurface s, Vector3f[] vertices, Vector2f[] texCoord, Texture2D texture, Node node) {
+        super(s, vertices, texCoord, texture, node);
 
 
 
@@ -27,7 +30,9 @@ public class SimpleMeshUI extends SimpleMesh {
         // *************************************************************************
 
         // Creating a geometry, and apply a single color material to it
-        this.geom = new Geometry("OurMesh", m);
+        this.geom = new SimpleGeometry(s, this);
+        geom.setName("OurMesh");
+                geom.setMesh(m);
 
 
         mat = new Material(App.getInstance().app.getAssetManager(), "/MatDefs/GameShopUI.j3md");
