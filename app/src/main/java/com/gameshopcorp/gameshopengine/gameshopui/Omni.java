@@ -5,6 +5,7 @@ import com.gameshopcorp.gameshopengine.graphics.ATMS;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
 import com.jme3.math.Vector2f;
+import com.jme3.scene.Node;
 import com.jme3.texture.Texture2D;
 import com.jme3.ui.Picture;
 
@@ -16,6 +17,7 @@ public class Omni {
     public Vector2f end;
     public String text;
     public Picture pic;
+    public Node node;
     public Omni(String text, ATMS atms, Vector2f start, Vector2f end){
 
         this.text = text;
@@ -27,15 +29,26 @@ public class Omni {
         this.pic.setPosition(start.x, start.y);
         this.pic.setHeight(end.y - start.y);
         this.pic.setWidth(end.x - start.x);
-
+        this.node = new Node("Omni");
     }
 
     public void draw(){
 
         pic.setTexture(App.getInstance().app.getAssetManager(), new Texture2D(atms.makeATMS()), true);
-        App.getInstance().app.getGuiNode().attachChild(pic);
+        node.attachChild(pic);
+
         drawText();
+        attachNode();
        // drawContainer();
+    }
+
+    public void attachNode(){
+        App.getInstance().app.getGuiNode().attachChild(node);
+    }
+
+    public void detachNode(){
+        App.getInstance().app.getGuiNode().detachChild(node);
+
     }
 
     public void drawText(){
@@ -45,7 +58,8 @@ public class Omni {
         helloText.setSize(guiFont.getCharSet().getRenderedSize());
         helloText.setText(text);
         helloText.setLocalTranslation(((start.x + end.x)/2f) -((start.x + end.x)/16f)  , ((start.y + end.y)/2f) , 0);
-        App.getInstance().app.getGuiNode().attachChild(helloText);
+       node.attachChild(helloText);
+       // App.getInstance().app.getGuiNode().attachChild(helloText);
 
     }
 

@@ -30,4 +30,10 @@ public class Screen {
             o.draw();
         }
     }
+
+    public void clear(){
+        for (Omni o: omnis){
+            o.detachNode();
+        }
+    }
 }

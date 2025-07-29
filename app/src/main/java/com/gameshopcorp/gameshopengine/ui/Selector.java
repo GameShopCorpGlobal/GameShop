@@ -370,7 +370,7 @@ public class Selector implements TouchListener {
                     CollisionResults results = new CollisionResults();
                     // Convert screen click to 3d position
                     Vector2f click2d = App.getInstance().app.getInputManager().getCursorPosition();
-                    App.getInstance().app.uiScreen.click(click2d);
+                    App.getInstance().app.screenContainer.click(click2d);
 
                     Vector3f click3d = App.getInstance().app.getCamera().getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 0f).clone();
                     Vector3f dir = App.getInstance().app.getCamera().getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 1f).subtractLocal(click3d).normalizeLocal();

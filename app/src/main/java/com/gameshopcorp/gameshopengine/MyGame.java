@@ -4,6 +4,7 @@ import com.gameshopcorp.gameshopengine.app.App;
 import com.gameshopcorp.gameshopengine.app.AppSuperMesh;
 import com.gameshopcorp.gameshopengine.gameshopui.Omni;
 import com.gameshopcorp.gameshopengine.gameshopui.Screen;
+import com.gameshopcorp.gameshopengine.gameshopui.ScreenContainer;
 import com.gameshopcorp.gameshopengine.graphics.ATMS;
 import com.gameshopcorp.gameshopengine.supermesh.SuperCube;
 import com.gameshopcorp.gameshopengine.supermesh.SuperSquare;
@@ -26,8 +27,8 @@ public final class MyGame extends SimpleApplication {
 
     public Nifty nifty;
     public NiftyJmeDisplay niftyDisplay;
-    public Screen uiScreen;
-
+    //public Screen uiScreen;
+    public ScreenContainer screenContainer;
     @Override
     public void simpleInitApp() {
         this.setDisplayFps(false);
@@ -38,6 +39,8 @@ public final class MyGame extends SimpleApplication {
 
         getViewPort().setBackgroundColor(ColorRGBA.White);
 
+        screenContainer = new ScreenContainer();
+        screenContainer.selectedScreen = "uiScreen";
 
         ATMS atms = new ATMS("BlueBox", 256, 256);
         atms.layer.drawCircle(128,128,256, new Vector4f(0,0,255,128));
@@ -100,7 +103,9 @@ public final class MyGame extends SimpleApplication {
 //        ATMS containerATMS = new ATMS("ATMSContainer", 100,100);
 //        containerATMS.layer.drawCircle(50,50,20,new Vector4f(0,0,255,200));
 
-        uiScreen = new Screen();
+        Screen uiScreen = new Screen();
+        Screen uiScreenATMS = new Screen();
+
         Omni omniReset = new Omni("Reset", atmsButton, new Vector2f(), new Vector2f(250, 100)){
 
             @Override
@@ -152,6 +157,7 @@ public final class MyGame extends SimpleApplication {
             public void onClick() {
                 super.onClick();
                 System.out.println("OMNI CLICKED");
+                screenContainer.changeScreen("uiScreen");
             }
         };
 
@@ -161,6 +167,7 @@ public final class MyGame extends SimpleApplication {
             public void onClick() {
                 super.onClick();
                 System.out.println("OMNI CLICKED");
+                screenContainer.changeScreen("uiScreenATMS");
             }
         };
 
@@ -207,6 +214,13 @@ public final class MyGame extends SimpleApplication {
         uiScreen.omnis.add(omniSuperMesh);
         uiScreen.omnis.addAll(superMeshContainer);
         uiScreen.draw();
+
+        uiScreenATMS.omnis.add(omniMode);
+        uiScreenATMS.omnis.add(omniMesh);
+        uiScreenATMS.omnis.add(omniATMS);
+
+        screenContainer.screens.put("uiScreen", uiScreen);
+        screenContainer.screens.put("uiScreenATMS", uiScreenATMS);
         //Player player = new Player();
 
         //ViewPort niftyView = renderManager.createPreView("NiftyView", new Camera(1024, 768));
