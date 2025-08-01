@@ -84,8 +84,12 @@ public class Omni {
 //
 //    }
 
-    public void onClick(Vector2f position){
+    public String onClick(Vector2f position){
+        return "";
+    }
 
+    public String onScroll(Vector2f position){
+        return "";
     }
 //    public void onClick(Vector2f position){
 //

@@ -15,13 +15,23 @@ public class Screen {
 
     }
 
-    public void click(Vector2f position){
+    public String click(Vector2f position){
 
         for (Omni o: omnis){
             if (position.x > o.start.x && position.x < o.end.x && position.y > o.start.y && position.y < o.end.y){
-                o.onClick(position);
+               return o.onClick(position);
             }
         }
+        return "";
+    }
+
+    public String scroll(Vector2f position){
+        for (Omni o: omnis){
+            if (position.x > o.start.x && position.x < o.end.x && position.y > o.start.y && position.y < o.end.y){
+                return o.onScroll(position);
+            }
+        }
+        return "";
     }
 
     public void draw(){

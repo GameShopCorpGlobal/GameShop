@@ -9,13 +9,17 @@ import com.gameshopcorp.gameshopengine.graphics.ATMS;
 import com.gameshopcorp.gameshopengine.supermesh.SuperCube;
 import com.gameshopcorp.gameshopengine.supermesh.SuperSquare;
 import com.gameshopcorp.gameshopengine.ui.Selector;
+import com.gameshopcorp.gameshopengine.utility.PercentVector;
 import com.jme3.app.SimpleApplication;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.math.Vector4f;
 import com.jme3.niftygui.NiftyJmeDisplay;
+import com.jme3.scene.CameraNode;
 import com.jme3.scene.Node;
+import com.jme3.scene.control.CameraControl;
 import com.jme3.texture.Texture2D;
 
 import java.util.ArrayList;
@@ -38,7 +42,9 @@ public final class MyGame extends SimpleApplication {
         this.setDisplayStatView(false);
         App.getInstance().app = this;
 
-        flyCam.setEnabled(true);
+        flyCam.setEnabled(false);
+
+        PercentVector percentVector = new PercentVector(new Vector2f(settings.getWidth(), settings.getHeight()));
 
         getViewPort().setBackgroundColor(ColorRGBA.White);
 
@@ -134,93 +140,101 @@ public final class MyGame extends SimpleApplication {
             }
         };
 
-        Omni omniReset = new Omni("Reset", atmsButton, new Vector2f(), new Vector2f(250, 100)){
+        Omni omniReset = new Omni("Reset", atmsButton, percentVector.percent(new Vector2f(20,0)), percentVector.percent(30,10)){
 
             @Override
-            public void onClick(Vector2f position) {
+            public String onClick(Vector2f position) {
                 super.onClick(position);
                 System.out.println("OMNI CLICKED");
 //                selector.resetSelectors();
 //                selector.clearMovers();
                 selector.resetSelectors();
+                return "Reset";
             }
         };
 
-        Omni omniClear = new Omni("Hide", atmsButton, new Vector2f(250,0), new Vector2f(500, 100)){
+        Omni omniClear = new Omni("Hide", atmsButton, percentVector.percent(new Vector2f(30,0)), percentVector.percent(40,10)){
 
             @Override
-            public void onClick(Vector2f position) {
+            public String onClick(Vector2f position) {
                 super.onClick(position);
                 System.out.println("OMNI CLICKED");
 //                selector.clearSelectors();
 //                selector.hideMovers();
                 selector.hideSelectors();
+                return "Hide";
             }
         };
 
-        Omni omniShow = new Omni("Show", atmsButton, new Vector2f(500,0), new Vector2f(750, 100)){
+        Omni omniShow = new Omni("Show", atmsButton, percentVector.percent(new Vector2f(40,0)), percentVector.percent(50,10)){
 
             @Override
-            public void onClick(Vector2f position) {
+            public String onClick(Vector2f position) {
                 super.onClick(position);
                 System.out.println("OMNI CLICKED");
 //                selector.showSelectors();
 //                selector.showMovers();
                 selector.showSelectors();
+                return "Show";
             }
         };
 
-        Omni omniMode = new Omni("Mode: ", atmsLabel, new Vector2f(0, this.settings.getHeight() - 50), new Vector2f(150, this.settings.getHeight())){
+        Omni omniMode = new Omni("Mode: ", atmsLabel, percentVector.percent(new Vector2f(0,90)), percentVector.percent(10,100)){
 
             @Override
-            public void onClick(Vector2f position) {
+            public String onClick(Vector2f position) {
                 super.onClick(position);
                 System.out.println("OMNI CLICKED");
+                return "Mode";
             }
         };
 
-        Omni omniMesh = new Omni("Mesh", atmsButton, new Vector2f(150, this.settings.getHeight() - 50), new Vector2f(300, this.settings.getHeight())){
+        Omni omniMesh = new Omni("Mesh", atmsButton, percentVector.percent(new Vector2f(10,90)), percentVector.percent(20,100)){
 
             @Override
-            public void onClick(Vector2f position) {
+            public String onClick(Vector2f position) {
                 super.onClick(position);
                 System.out.println("OMNI CLICKED");
                 screenContainer.changeScreen("uiScreen");
+                return "Mesh";
             }
         };
 
-        Omni omniATMS = new Omni("ATMS", atmsButton, new Vector2f(300, this.settings.getHeight() - 50), new Vector2f(450, this.settings.getHeight())){
+        Omni omniATMS = new Omni("ATMS", atmsButton, percentVector.percent(new Vector2f(20,90)), percentVector.percent(30,100)){
 
             @Override
-            public void onClick(Vector2f position) {
+            public String onClick(Vector2f position) {
                 super.onClick(position);
                 System.out.println("OMNI CLICKED");
                 screenContainer.changeScreen("uiScreenATMS");
+                return "ATMS";
             }
         };
 
-        Omni omniSuperMesh = new Omni("SuperMesh: ", atmsLabel, new Vector2f(0, this.settings.getHeight() - 100), new Vector2f(150, this.settings.getHeight() - 50)){
+        Omni omniSuperMesh = new Omni("SuperMesh: ", atmsLabel, percentVector.percent(new Vector2f(0,80)), percentVector.percent(10,90)){
 
             @Override
-            public void onClick(Vector2f position) {
+            public String onClick(Vector2f position) {
                 super.onClick(position);
                 System.out.println("OMNI CLICKED");
+                return "SuperMesh";
             }
         };
 
         ArrayList<Omni> superMeshContainer = new ArrayList<>();
-        float f = 150f;
+        float f = 70;
         for (String s: AppSuperMesh.getInstance().superMeshes.keySet()){
-            Omni superMesh = new Omni(s, atmsLabel, new Vector2f(0, this.settings.getHeight() - f), new Vector2f(150, this.settings.getHeight() - (f - 50))){
+            Omni superMesh = new Omni(s, atmsLabel, percentVector.percent(new Vector2f(0,f)), percentVector.percent(10,f + 10)){
 
                 @Override
-                public void onClick(Vector2f position) {
+                public String onClick(Vector2f position) {
                     super.onClick(position);
                     System.out.println("SUPERMESH CLICKED");
+                    return "SuperMeshContainer";
                 }
             };
             superMeshContainer.add(superMesh);
-            f += 50f;
+            f -= 10f;
         }
 
         paintColor = new Vector4f(0,0,255,128);
@@ -255,25 +269,27 @@ public final class MyGame extends SimpleApplication {
         Omni omniPaint = new Omni("", atmsPaint, new Vector2f(this.settings.getWidth() - 200, this.settings.getHeight() - 200), new Vector2f(this.settings.getWidth(), this.settings.getHeight())){
 
             @Override
-            public void onClick(Vector2f position) {
+            public String onClick(Vector2f position) {
                 super.onClick(position);
                 System.out.println("OMNI CLICKED");
+                return "Paint";
             }
         };
 
         Omni omniRed = new Omni("Red: " + paintColor.x, atmsLabel, new Vector2f(this.settings.getWidth() - 200, this.settings.getHeight() - 250), new Vector2f(this.settings.getWidth() - 100, this.settings.getHeight() - 200)){
 
             @Override
-            public void onClick(Vector2f position) {
+            public String onClick(Vector2f position) {
                 super.onClick(position);
                 System.out.println("OMNI CLICKED");
+                return "Red";
             }
         };
 
         Omni omniSliderRed = new Omni("", atmsSliderRed, new Vector2f(this.settings.getWidth() - 400, this.settings.getHeight() - 300), new Vector2f(this.settings.getWidth(), this.settings.getHeight() - 250)){
 
             @Override
-            public void onClick(Vector2f position) {
+            public String onClick(Vector2f position) {
                 super.onClick(position);
                 float colorLocation = ((position.x - start.x)/400f) * 255f;
                 paintColor.setX(colorLocation);
@@ -286,6 +302,7 @@ public final class MyGame extends SimpleApplication {
                 atmsSliderRed.layer.drawCircle((int) paintColor.x, 47, (short)25, new Vector4f(0,0,255,255));
                 draw();
                 System.out.println("OMNI CLICKED");
+                return "SliderRed";
             }
         };
 
@@ -319,17 +336,18 @@ public final class MyGame extends SimpleApplication {
         Omni omniGreen = new Omni("Green: " + paintColor.y, atmsLabel, new Vector2f(this.settings.getWidth() - 200, this.settings.getHeight() - 350), new Vector2f(this.settings.getWidth() - 100, this.settings.getHeight() - 300)){
 
             @Override
-            public void onClick(Vector2f position) {
+            public String onClick(Vector2f position) {
                 super.onClick(position);
 
                 System.out.println("OMNI CLICKED");
+                return "Green";
             }
         };
 
         Omni omniSliderGreen = new Omni("", atmsSliderGreen, new Vector2f(this.settings.getWidth() - 400, this.settings.getHeight() - 400), new Vector2f(this.settings.getWidth(), this.settings.getHeight() - 350)){
 
             @Override
-            public void onClick(Vector2f position) {
+            public String onClick(Vector2f position) {
                 super.onClick(position);
                 float colorLocation = ((position.x - start.x)/400f) * 255f;
                 paintColor.setY(colorLocation);
@@ -342,6 +360,7 @@ public final class MyGame extends SimpleApplication {
                 atmsSliderGreen.layer.drawCircle((int) paintColor.y, 47, (short)25, new Vector4f(0,0,255,255));
                 draw();
                 System.out.println("OMNI CLICKED");
+                return "SliderGreen";
             }
         };
 
@@ -366,16 +385,17 @@ public final class MyGame extends SimpleApplication {
         Omni omniBlue = new Omni("Blue: " + paintColor.z, atmsLabel, new Vector2f(this.settings.getWidth() - 200, this.settings.getHeight() - 450), new Vector2f(this.settings.getWidth() - 100, this.settings.getHeight() - 400)){
 
             @Override
-            public void onClick(Vector2f position) {
+            public String onClick(Vector2f position) {
                 super.onClick(position);
                 System.out.println("OMNI CLICKED");
+                return "Blue";
             }
         };
 
         Omni omniSliderBlue = new Omni("", atmsSliderBlue, new Vector2f(this.settings.getWidth() - 400, this.settings.getHeight() - 500), new Vector2f(this.settings.getWidth() , this.settings.getHeight() - 450)){
 
             @Override
-            public void onClick(Vector2f position) {
+            public String onClick(Vector2f position) {
                 super.onClick(position);
                 float colorLocation = ((position.x - start.x)/400f) * 255f;
                 paintColor.setZ(colorLocation);
@@ -388,6 +408,7 @@ public final class MyGame extends SimpleApplication {
                 atmsSliderBlue.layer.drawCircle((int) paintColor.z, 47, (short)25, new Vector4f(0,0,255,255));
                 draw();
                 System.out.println("OMNI CLICKED");
+                return "SliderBlue";
             }
         };
 //        Omni omniBluePlus = new Omni(" + " , atmsButton, new Vector2f(this.settings.getWidth() - 100, this.settings.getHeight() - 500), new Vector2f(this.settings.getWidth() - 50, this.settings.getHeight() - 400)){
@@ -411,17 +432,18 @@ public final class MyGame extends SimpleApplication {
         Omni omniAlpha = new Omni("Alpha: " + paintColor.w, atmsLabel, new Vector2f(this.settings.getWidth() - 200, this.settings.getHeight() - 550), new Vector2f(this.settings.getWidth() - 100, this.settings.getHeight() - 500)){
 
             @Override
-            public void onClick(Vector2f position) {
+            public String onClick(Vector2f position) {
                 super.onClick(position);
 
                 System.out.println("OMNI CLICKED");
+                return "Alpha";
             }
         };
 
         Omni omniSliderAlpha = new Omni("", atmsSliderAlpha, new Vector2f(this.settings.getWidth() - 400, this.settings.getHeight() - 600), new Vector2f(this.settings.getWidth(), this.settings.getHeight() - 550)){
 
             @Override
-            public void onClick(Vector2f position) {
+            public String onClick(Vector2f position) {
                 super.onClick(position);
                 float colorLocation = ((position.x - start.x)/400f) * 255f;
                 paintColor.setW(colorLocation);
@@ -434,23 +456,25 @@ public final class MyGame extends SimpleApplication {
                 atmsSliderAlpha.layer.drawCircle((int) paintColor.w, 47, (short)25, new Vector4f(0,0,255,255));
                 draw();
                 System.out.println("OMNI CLICKED");
+                return "SliderAlpha";
             }
         };
 
         Omni omniRadius = new Omni("Radius: " + radius.x, atmsLabel, new Vector2f(this.settings.getWidth() - 200, this.settings.getHeight() - 650), new Vector2f(this.settings.getWidth(), this.settings.getHeight() - 600)){
 
             @Override
-            public void onClick(Vector2f position) {
+            public String onClick(Vector2f position) {
                 super.onClick(position);
 
                 System.out.println("OMNI CLICKED");
+                return "Radius";
             }
         };
 
         Omni omniSliderRadius = new Omni("", atmsSliderRadius, new Vector2f(this.settings.getWidth() - 400, this.settings.getHeight() - 700), new Vector2f(this.settings.getWidth(), this.settings.getHeight() - 650)){
 
             @Override
-            public void onClick(Vector2f position) {
+            public String onClick(Vector2f position) {
                 super.onClick(position);
                 float colorLocation = ((position.x - start.x)/400f) * 255f;
                 radius.setX(colorLocation);
@@ -463,6 +487,86 @@ public final class MyGame extends SimpleApplication {
                 atmsSliderRadius.layer.drawCircle((int) radius.x, 47, (short)25, new Vector4f(0,0,255,255));
                 draw();
                 System.out.println("OMNI CLICKED");
+                return "SliderRadius";
+            }
+        };
+
+        ATMS atmsAnalogMove = new ATMS("analogMove", 128,128);
+        atmsAnalogMove.layer.drawCircle(64,64,256, new Vector4f(128,128,128,128));
+        atmsAnalogMove.layer.drawCircle(64,64,32, new Vector4f(200,200,200,128));
+        atmsAnalogMove.layer.drawCircle(64,64,16, new Vector4f(255,255,255,128));
+
+        Node target = new Node("target");
+        rootNode.attachChild(target);
+//create the camera Node
+        CameraNode camNode = new CameraNode("Camera Node", cam);
+//This mode means that camera copies the movements of the target:
+        camNode.setControlDir(CameraControl.ControlDirection.SpatialToCamera);
+//Attach the camNode to the target:
+        target.attachChild(camNode);
+//Move camNode, e.g. behind and above the target:
+        camNode.setLocalTranslation(new Vector3f(0, 0, -10));
+//Rotate the camNode to look at the target:
+        camNode.lookAt(target.getLocalTranslation(), Vector3f.UNIT_Y);
+
+        Omni omniAnalogMove = new Omni("", atmsAnalogMove, percentVector.percent(0,0), percentVector.percent(20,20)){
+
+            @Override
+            public String onClick(Vector2f position) {
+
+                Vector2f percentageClick = percentVector.wholeToPercentage(position);
+                Vector2f percentageStart = percentVector.wholeToPercentage(start);
+                Vector2f percentageEnd = percentVector.wholeToPercentage(end);
+                Vector2f percentageMid = new Vector2f(percentageEnd.add(percentageStart)).divide(2);
+                Vector2f movementPercent = percentageClick.subtract(percentageMid);
+                //Vector2f totalPercent = new Vector2f((percentageClick.x + (percentageStart.x))/percentageEnd.x, (percentageClick.y + (percentageStart.y)/percentageEnd.y ));//.divide(percentageClick.add(percentageEnd));
+                System.out.println("Movement Percent: " + movementPercent);
+                Vector3f towards = new Vector3f(target.getLocalTranslation().subtract(camNode.getLocalTranslation())).mult(movementPercent.y/100f);
+               Vector3f strafe =  (new Vector3f(-movementPercent.x/50f, 0 ,0));
+                atmsAnalogMove.layer.drawCircle(64,64,256, new Vector4f(128,128,128,128));
+                atmsAnalogMove.layer.drawCircle((int) (64 + (percentageStart.add(movementPercent)).divide(percentageEnd.x, percentageEnd.y).x * 128), (int) (64 + (percentageStart.add(movementPercent)).divide(percentageEnd.x, percentageEnd.y).y * 128),32, new Vector4f(200,200,200,128));
+                atmsAnalogMove.layer.drawCircle((int) (64 + (percentageStart.add(movementPercent)).divide(percentageEnd.x, percentageEnd.y).x * 128), (int) (64 + (percentageStart.add(movementPercent)).divide(percentageEnd.x, percentageEnd.y).y * 128),16, new Vector4f(255,255,255,128));
+                draw();
+                camNode.move(towards);//.add(strafe));
+                camNode.move(strafe);
+                camNode.lookAt(target.getLocalTranslation(), Vector3f.UNIT_Y);
+                return "AnalogMove";
+            }
+
+            @Override
+            public String onScroll(Vector2f position) {
+                Vector2f percentageClick = percentVector.wholeToPercentage(position);
+                Vector2f percentageStart = percentVector.wholeToPercentage(start);
+                Vector2f percentageEnd = percentVector.wholeToPercentage(end);
+                Vector2f percentageMid = new Vector2f(percentageEnd.add(percentageStart)).divide(2);
+                Vector2f movementPercent = percentageClick.subtract(percentageMid);
+                //Vector2f totalPercent = new Vector2f((percentageClick.x + (percentageStart.x))/percentageEnd.x, (percentageClick.y + (percentageStart.y)/percentageEnd.y ));//.divide(percentageClick.add(percentageEnd));
+                System.out.println("Movement Percent: " + movementPercent);
+                Vector3f towards = new Vector3f(target.getLocalTranslation().subtract(camNode.getLocalTranslation())).mult(movementPercent.y/100f);
+               // Vector3f strafe =  (new Vector3f(-(movementPercent.x), 0 , (movementPercent.x)));
+                atmsAnalogMove.layer.drawCircle(64,64,256, new Vector4f(128,128,128,128));
+                atmsAnalogMove.layer.drawCircle((int) (64 + (percentageStart.add(movementPercent)).divide(percentageEnd.x, percentageEnd.y).x * 128), (int) (64 + (percentageStart.add(movementPercent)).divide(percentageEnd.x, percentageEnd.y).y * 128),32, new Vector4f(200,200,200,128));
+                atmsAnalogMove.layer.drawCircle((int) (64 + (percentageStart.add(movementPercent)).divide(percentageEnd.x, percentageEnd.y).x * 128), (int) (64 + (percentageStart.add(movementPercent)).divide(percentageEnd.x, percentageEnd.y).y * 128),16, new Vector4f(255,255,255,128));
+                draw();
+                camNode.move(towards.divide(4));//.add(strafe));
+                target.rotate(0, (movementPercent.x/180f),0);
+               // camNode.move(strafe);
+                camNode.lookAt(target.getLocalTranslation(), Vector3f.UNIT_Y);
+                return "AnalogMove";
+                //return super.onScroll(position);
+            }
+        };
+
+        ATMS atmsAnalogRotate = new ATMS("analogMove", 128,128);
+        atmsAnalogRotate.layer.drawCircle(64,64,256, new Vector4f(128,128,128,128));
+        atmsAnalogRotate.layer.drawCircle(64,64,32, new Vector4f(200,200,200,128));
+        atmsAnalogRotate.layer.drawCircle(64,64,16, new Vector4f(255,255,255,128));
+
+        Omni omniAnalogRotate = new Omni("", atmsAnalogMove, percentVector.percent(80,0), percentVector.percent(100,20)){
+
+            @Override
+            public String onClick(Vector2f position) {
+                return "AnalogMove";
             }
         };
 //
@@ -502,6 +606,8 @@ public final class MyGame extends SimpleApplication {
         uiScreen.omnis.add(omniShow);
         uiScreen.omnis.add(omniSuperMesh);
         uiScreen.omnis.addAll(superMeshContainer);
+        uiScreen.omnis.add(omniAnalogMove);
+        uiScreen.omnis.add(omniAnalogRotate);
         uiScreen.draw();
 
         uiScreenATMS.omnis.add(omniMode);
@@ -520,6 +626,9 @@ public final class MyGame extends SimpleApplication {
         uiScreenATMS.omnis.add(omniSliderBlue);
         uiScreenATMS.omnis.add(omniSliderAlpha);
         uiScreenATMS.omnis.add(omniSliderRadius);
+
+        uiScreenATMS.omnis.add(omniAnalogMove);
+        uiScreenATMS.omnis.add(omniAnalogRotate);
 //        uiScreenATMS.omnis.add(omniRedPlus);
 //        uiScreenATMS.omnis.add(omniGreenPlus);
 //        uiScreenATMS.omnis.add(omniBluePlus);

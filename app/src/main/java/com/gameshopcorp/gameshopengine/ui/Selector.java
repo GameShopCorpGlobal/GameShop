@@ -321,6 +321,7 @@ public class Selector implements TouchListener {
         if (name.equals("MyTouch")) {
             switch (event.getType()) {
                 case DOWN:
+
                     // Handle touch down event
                     System.out.println("Touch Down at: " + event.getX() + ", " + event.getY());
                     // Example: Check if a game object was touched
@@ -481,69 +482,74 @@ public class Selector implements TouchListener {
                     System.out.println("Tap detected at: " + event.getX() + ", " + event.getY());
                     break;
                 case SCROLL:
-                    if (App.getInstance().app.screenContainer.selectedScreen.equals("uiScreen")) {
+                    Vector2f scroll2d = App.getInstance().app.getInputManager().getCursorPosition();
+                    if (!App.getInstance().app.screenContainer.scroll(scroll2d).equals( "")) {
 
-                        if (geometryScaler.selected) {
-                            if (event.getDeltaX() > 0) {
-                                geometryScaler.move(0.01f, -0.01f, 0.01f);
-                            }
-                            if (event.getDeltaX() < 0) {
-                                geometryScaler.move(-0.01f, 0.01f, -0.01f);
 
+                        if (App.getInstance().app.screenContainer.selectedScreen.equals("uiScreen")) {
+
+                            if (geometryScaler.selected) {
+                                if (event.getDeltaX() > 0) {
+                                    geometryScaler.move(0.01f, -0.01f, 0.01f);
+                                }
+                                if (event.getDeltaX() < 0) {
+                                    geometryScaler.move(-0.01f, 0.01f, -0.01f);
+
+                                }
                             }
+                            if (mover.selected) {
+                                if (mover.getName().contains("Up")) {
+                                    if (event.getDeltaX() > 0) {
+                                        moveNode.move(0, 0.01f, 0);
+                                    }
+                                    if (event.getDeltaX() < 0) {
+                                        moveNode.move(0, -0.01f, 0);
+                                    }
+                                }
+                                if (mover.getName().contains("Down")) {
+                                    if (event.getDeltaX() > 0) {
+                                        moveNode.move(0, 0.01f, 0);
+                                    }
+                                    if (event.getDeltaX() < 0) {
+                                        moveNode.move(0, -0.01f, 0);
+                                    }
+                                }
+                                if (mover.getName().contains("Left")) {
+                                    if (event.getDeltaX() > 0) {
+                                        moveNode.move(0.01f, 0, 0);
+                                    }
+                                    if (event.getDeltaX() < 0) {
+                                        moveNode.move(-0.01f, 0, 0);
+                                    }
+                                }
+                                if (mover.getName().contains("Right")) {
+                                    if (event.getDeltaX() > 0) {
+                                        moveNode.move(0.01f, 0, 0);
+                                    }
+                                    if (event.getDeltaX() < 0) {
+                                        moveNode.move(-0.01f, 0, 0);
+                                    }
+                                }
+                                if (mover.getName().contains("Front")) {
+                                    if (event.getDeltaX() > 0) {
+                                        moveNode.move(0, 0, 0.01f);
+                                    }
+                                    if (event.getDeltaX() < 0) {
+                                        moveNode.move(0, 0, -0.01f);
+                                    }
+                                }
+                                if (mover.getName().contains("Back")) {
+                                    if (event.getDeltaX() > 0) {
+                                        moveNode.move(0, 0, 0.01f);
+                                    }
+                                    if (event.getDeltaX() < 0) {
+                                        moveNode.move(0, 0, -0.01f);
+                                    }
+                                }
+                            }
+                        } else if (App.getInstance().app.screenContainer.selectedScreen.equals("uiScreenATMS")) {
+
                         }
-                        if (mover.selected) {
-                            if (mover.getName().contains("Up")) {
-                                if (event.getDeltaX() > 0) {
-                                    moveNode.move(0, 0.01f, 0);
-                                }
-                                if (event.getDeltaX() < 0) {
-                                    moveNode.move(0, -0.01f, 0);
-                                }
-                            }
-                            if (mover.getName().contains("Down")) {
-                                if (event.getDeltaX() > 0) {
-                                    moveNode.move(0, 0.01f, 0);
-                                }
-                                if (event.getDeltaX() < 0) {
-                                    moveNode.move(0, -0.01f, 0);
-                                }
-                            }
-                            if (mover.getName().contains("Left")) {
-                                if (event.getDeltaX() > 0) {
-                                    moveNode.move(0.01f, 0, 0);
-                                }
-                                if (event.getDeltaX() < 0) {
-                                    moveNode.move(-0.01f, 0, 0);
-                                }
-                            }
-                            if (mover.getName().contains("Right")) {
-                                if (event.getDeltaX() > 0) {
-                                    moveNode.move(0.01f, 0, 0);
-                                }
-                                if (event.getDeltaX() < 0) {
-                                    moveNode.move(-0.01f, 0, 0);
-                                }
-                            }
-                            if (mover.getName().contains("Front")) {
-                                if (event.getDeltaX() > 0) {
-                                    moveNode.move(0, 0, 0.01f);
-                                }
-                                if (event.getDeltaX() < 0) {
-                                    moveNode.move(0, 0, -0.01f);
-                                }
-                            }
-                            if (mover.getName().contains("Back")) {
-                                if (event.getDeltaX() > 0) {
-                                    moveNode.move(0, 0, 0.01f);
-                                }
-                                if (event.getDeltaX() < 0) {
-                                    moveNode.move(0, 0, -0.01f);
-                                }
-                            }
-                        }
-                    } else if (App.getInstance().app.screenContainer.selectedScreen.equals("uiScreenATMS")) {
-
                     }
             }
         }

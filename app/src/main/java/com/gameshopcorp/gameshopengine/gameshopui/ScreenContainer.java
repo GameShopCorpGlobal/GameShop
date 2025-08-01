@@ -17,6 +17,10 @@ public class ScreenContainer {
         screens.get(selectedScreen).click(point);
     }
 
+    public String scroll(Vector2f point){
+       return screens.get(selectedScreen).scroll(point);
+    }
+
     public void clear(){
         screens.get(selectedScreen).clear();
     }
