@@ -513,22 +513,25 @@ public final class MyGame extends SimpleApplication {
 
             @Override
             public String onClick(Vector2f position) {
-
                 Vector2f percentageClick = percentVector.wholeToPercentage(position);
                 Vector2f percentageStart = percentVector.wholeToPercentage(start);
                 Vector2f percentageEnd = percentVector.wholeToPercentage(end);
                 Vector2f percentageMid = new Vector2f(percentageEnd.add(percentageStart)).divide(2);
                 Vector2f movementPercent = percentageClick.subtract(percentageMid);
                 //Vector2f totalPercent = new Vector2f((percentageClick.x + (percentageStart.x))/percentageEnd.x, (percentageClick.y + (percentageStart.y)/percentageEnd.y ));//.divide(percentageClick.add(percentageEnd));
-                System.out.println("Movement Percent: " + movementPercent);
+                // System.out.println("Movement Percent: " + movementPercent);
                 Vector3f towards = new Vector3f(target.getLocalTranslation().subtract(camNode.getLocalTranslation())).mult(movementPercent.y/100f);
-               Vector3f strafe =  (new Vector3f(-movementPercent.x/50f, 0 ,0));
+                // Vector3f strafe =  (new Vector3f(-(movementPercent.x), 0 , (movementPercent.x)));
                 atmsAnalogMove.layer.drawCircle(64,64,256, new Vector4f(128,128,128,128));
-                atmsAnalogMove.layer.drawCircle((int) (64 + (percentageStart.add(movementPercent)).divide(percentageEnd.x, percentageEnd.y).x * 128), (int) (64 + (percentageStart.add(movementPercent)).divide(percentageEnd.x, percentageEnd.y).y * 128),32, new Vector4f(200,200,200,128));
-                atmsAnalogMove.layer.drawCircle((int) (64 + (percentageStart.add(movementPercent)).divide(percentageEnd.x, percentageEnd.y).x * 128), (int) (64 + (percentageStart.add(movementPercent)).divide(percentageEnd.x, percentageEnd.y).y * 128),16, new Vector4f(255,255,255,128));
+//                atmsAnalogMove.layer.drawCircle((int) (64 + (percentageStart.add(movementPercent)).divide(percentageEnd.x, percentageEnd.y).x * 128), (int) (64 + (percentageStart.add(movementPercent)).divide(percentageEnd.x, percentageEnd.y).y * 128),32, new Vector4f(200,200,200,128));
+//                atmsAnalogMove.layer.drawCircle((int) (64 + (percentageStart.add(movementPercent)).divide(percentageEnd.x, percentageEnd.y).x * 128), (int) (64 + (percentageStart.add(movementPercent)).divide(percentageEnd.x, percentageEnd.y).y * 128),16, new Vector4f(255,255,255,128));
+                atmsAnalogMove.layer.drawCircle((int) (64 + (movementPercent.x * 64)/10), (int) (64 +  (movementPercent.y * 64)/10),32, new Vector4f(200,200,200,128));
+                atmsAnalogMove.layer.drawCircle((int) (64 + (movementPercent.x * 64)/10), (int) (64 +  (movementPercent.y * 64)/10),16, new Vector4f(255,255,255,128));
+
                 draw();
-                camNode.move(towards);//.add(strafe));
-                camNode.move(strafe);
+                camNode.move(towards.divide(4));//.add(strafe));
+                target.rotate(0, (movementPercent.x/180f),0);
+                // camNode.move(strafe);
                 camNode.lookAt(target.getLocalTranslation(), Vector3f.UNIT_Y);
                 return "AnalogMove";
             }
@@ -541,12 +544,17 @@ public final class MyGame extends SimpleApplication {
                 Vector2f percentageMid = new Vector2f(percentageEnd.add(percentageStart)).divide(2);
                 Vector2f movementPercent = percentageClick.subtract(percentageMid);
                 //Vector2f totalPercent = new Vector2f((percentageClick.x + (percentageStart.x))/percentageEnd.x, (percentageClick.y + (percentageStart.y)/percentageEnd.y ));//.divide(percentageClick.add(percentageEnd));
-                System.out.println("Movement Percent: " + movementPercent);
+                //System.out.println("Movement Percent: " + movementPercent);
                 Vector3f towards = new Vector3f(target.getLocalTranslation().subtract(camNode.getLocalTranslation())).mult(movementPercent.y/100f);
                // Vector3f strafe =  (new Vector3f(-(movementPercent.x), 0 , (movementPercent.x)));
                 atmsAnalogMove.layer.drawCircle(64,64,256, new Vector4f(128,128,128,128));
-                atmsAnalogMove.layer.drawCircle((int) (64 + (percentageStart.add(movementPercent)).divide(percentageEnd.x, percentageEnd.y).x * 128), (int) (64 + (percentageStart.add(movementPercent)).divide(percentageEnd.x, percentageEnd.y).y * 128),32, new Vector4f(200,200,200,128));
-                atmsAnalogMove.layer.drawCircle((int) (64 + (percentageStart.add(movementPercent)).divide(percentageEnd.x, percentageEnd.y).x * 128), (int) (64 + (percentageStart.add(movementPercent)).divide(percentageEnd.x, percentageEnd.y).y * 128),16, new Vector4f(255,255,255,128));
+                System.out.println ("ATMS Move Percent " + ( (movementPercent)).x );
+
+//                atmsAnalogMove.layer.drawCircle((int) (64 + (percentageStart.add(movementPercent)).divide(percentageEnd.x, percentageEnd.y).x * 128), (int) (64 + (percentageStart.add(movementPercent)).divide(percentageEnd.x, percentageEnd.y).y * 128),32, new Vector4f(200,200,200,128));
+//                atmsAnalogMove.layer.drawCircle((int) (64 + (percentageStart.add(movementPercent)).divide(percentageEnd.x, percentageEnd.y).x * 128), (int) (64 + (percentageStart.add(movementPercent)).divide(percentageEnd.x, percentageEnd.y).y * 128),16, new Vector4f(255,255,255,128));
+                atmsAnalogMove.layer.drawCircle((int) (64 + (movementPercent.x * 64)/10), (int) (64 +  (movementPercent.y * 64)/10),32, new Vector4f(200,200,200,128));
+                atmsAnalogMove.layer.drawCircle((int) (64 + (movementPercent.x * 64)/10), (int) (64 +  (movementPercent.y * 64)/10),16, new Vector4f(255,255,255,128));
+
                 draw();
                 camNode.move(towards.divide(4));//.add(strafe));
                 target.rotate(0, (movementPercent.x/180f),0);
@@ -557,17 +565,62 @@ public final class MyGame extends SimpleApplication {
             }
         };
 
-        ATMS atmsAnalogRotate = new ATMS("analogMove", 128,128);
+        ATMS atmsAnalogRotate = new ATMS("analogRotate", 128,128);
         atmsAnalogRotate.layer.drawCircle(64,64,256, new Vector4f(128,128,128,128));
         atmsAnalogRotate.layer.drawCircle(64,64,32, new Vector4f(200,200,200,128));
         atmsAnalogRotate.layer.drawCircle(64,64,16, new Vector4f(255,255,255,128));
 
-        Omni omniAnalogRotate = new Omni("", atmsAnalogMove, percentVector.percent(80,0), percentVector.percent(100,20)){
+        Omni omniAnalogRotate = new Omni("", atmsAnalogRotate, percentVector.percent(80,0), percentVector.percent(100,20)){
 
             @Override
             public String onClick(Vector2f position) {
+                Vector2f percentageClick = percentVector.wholeToPercentage(position);
+                Vector2f percentageStart = percentVector.wholeToPercentage(start);
+                Vector2f percentageEnd = percentVector.wholeToPercentage(end);
+                Vector2f percentageMid = new Vector2f(percentageEnd.add(percentageStart)).divide(2);
+                Vector2f movementPercent = percentageClick.subtract(percentageMid);
+                //Vector2f totalPercent = new Vector2f((percentageClick.x + (percentageStart.x))/percentageEnd.x, (percentageClick.y + (percentageStart.y)/percentageEnd.y ));//.divide(percentageClick.add(percentageEnd));
+                //System.out.println("Movement Percent: " + movementPercent);
+                Vector3f towards = new Vector3f(target.getLocalTranslation().subtract(camNode.getLocalTranslation())).mult(movementPercent.y/100f);
+                // Vector3f strafe =  (new Vector3f(-(movementPercent.x), 0 , (movementPercent.x)));
+                atmsAnalogRotate.layer.drawCircle(64,64,256, new Vector4f(128,128,128,128));
+                atmsAnalogRotate.layer.drawCircle((int) (64 + (movementPercent.x * 64)/10), (int) (64 +  (movementPercent.y * 64)/10),32, new Vector4f(200,200,200,128));
+                atmsAnalogRotate.layer.drawCircle((int) (64 + (movementPercent.x * 64)/10), (int) (64 +  (movementPercent.y * 64)/10),16, new Vector4f(255,255,255,128));
+                draw();
+                target.move(0,(movementPercent.y/180),0);
+               // target.move(target.getLocalTranslation().add(camNode.getLocalTranslation()).normalize());
+//                camNode.move(towards.divide(4));//.add(strafe));
+//                target.rotate(0, (movementPercent.x/180f),0);
+                // camNode.move(strafe);
+                camNode.lookAt(target.getLocalTranslation(), Vector3f.UNIT_Y);
                 return "AnalogMove";
+
+
             }
+
+            @Override
+            public String onScroll(Vector2f position) {
+                Vector2f percentageClick = percentVector.wholeToPercentage(position);
+                Vector2f percentageStart = percentVector.wholeToPercentage(start);
+                Vector2f percentageEnd = percentVector.wholeToPercentage(end);
+                Vector2f percentageMid = new Vector2f(percentageEnd.add(percentageStart)).divide(2);
+                Vector2f movementPercent = percentageClick.subtract(percentageMid);
+                //Vector2f totalPercent = new Vector2f((percentageClick.x + (percentageStart.x))/percentageEnd.x, (percentageClick.y + (percentageStart.y)/percentageEnd.y ));//.divide(percentageClick.add(percentageEnd));
+                //System.out.println("Movement Percent: " + movementPercent);
+                Vector3f towards = new Vector3f(target.getLocalTranslation().subtract(camNode.getLocalTranslation())).mult(movementPercent.y/100f);
+                // Vector3f strafe =  (new Vector3f(-(movementPercent.x), 0 , (movementPercent.x)));
+                atmsAnalogRotate.layer.drawCircle(64,64,256, new Vector4f(128,128,128,128));
+//                System.out.println ("ATMS Move Percent " + (percentageStart.add(movementPercent)).divide(percentageEnd.x, percentageEnd.y).x );
+                atmsAnalogRotate.layer.drawCircle((int) (64 + (movementPercent.x * 64)/10), (int) (64 +  (movementPercent.y * 64)/10),32, new Vector4f(200,200,200,128));
+                atmsAnalogRotate.layer.drawCircle((int) (64 + (movementPercent.x * 64)/10), (int) (64 +  (movementPercent.y * 64)/10),16, new Vector4f(255,255,255,128));
+                draw();
+                target.move(0,(movementPercent.y/180),0);
+                // target.move(target.getLocalTranslation().add(camNode.getLocalTranslation()).normalize());
+//                camNode.move(towards.divide(4));//.add(strafe));
+//                target.rotate(0, (movementPercent.x/180f),0);
+                // camNode.move(strafe);
+                camNode.lookAt(target.getLocalTranslation(), Vector3f.UNIT_Y);
+                return "AnalogMove";            }
         };
 //
 //        Omni omniAlphaPlus = new Omni(" + " , atmsButton, new Vector2f(this.settings.getWidth() - 100, this.settings.getHeight() - 600), new Vector2f(this.settings.getWidth() - 50, this.settings.getHeight() - 500)){

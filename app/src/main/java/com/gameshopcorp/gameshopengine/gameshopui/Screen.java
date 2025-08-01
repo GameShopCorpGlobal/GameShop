@@ -17,21 +17,23 @@ public class Screen {
 
     public String click(Vector2f position){
 
+        String clickString = "";
         for (Omni o: omnis){
             if (position.x > o.start.x && position.x < o.end.x && position.y > o.start.y && position.y < o.end.y){
-               return o.onClick(position);
+               clickString += o.onClick(position);
             }
         }
-        return "";
+        return clickString;
     }
 
     public String scroll(Vector2f position){
+        String scrollString = "";
         for (Omni o: omnis){
             if (position.x > o.start.x && position.x < o.end.x && position.y > o.start.y && position.y < o.end.y){
-                return o.onScroll(position);
+                scrollString += o.onScroll(position);
             }
         }
-        return "";
+        return scrollString;
     }
 
     public void draw(){
