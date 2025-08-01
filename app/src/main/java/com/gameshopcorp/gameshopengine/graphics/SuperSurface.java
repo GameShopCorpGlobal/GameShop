@@ -103,7 +103,7 @@ public class SuperSurface {
             this.vInfinitesimals[i].setSuperLine((byte) 2, currencyLines[2].infinitesimals[i]);
             this.vInfinitesimals[i].setSuperLine((byte) 3, currencyLines[3].infinitesimals[i]);
         }
-        updateSimpleMeshes();
+        //updateSimpleMeshes();
     }
 
     public void moveSuperLine(byte line, byte point, Vector3f movePoint){
@@ -115,7 +115,7 @@ public class SuperSurface {
             this.vInfinitesimals[i].setSuperLine((byte) 2, currencyLines[2].infinitesimals[i]);
             this.vInfinitesimals[i].setSuperLine((byte) 3, currencyLines[3].infinitesimals[i]);
         }
-        updateSimpleMeshes();
+        //updateSimpleMeshes();
     }
 
     public void updateSimpleMeshes(){

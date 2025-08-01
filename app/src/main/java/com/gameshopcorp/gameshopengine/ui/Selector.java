@@ -289,6 +289,12 @@ public class Selector implements TouchListener {
             ags.setGeometrySelectors(ags.array.get(0).getLocalTranslation().add(moveNode.getLocalTranslation().subtract(lastMoveNode.getLocalTranslation())));
         }
 
+        for (SuperMesh sm: AppSuperMesh.getInstance().superMeshes.values()){
+            for (SuperSurface s: sm.superMesh.values()){
+                s.updateSimpleMeshes();
+            }
+        }
+
     }
 
     public void moveAllSelectedPointsRelativeToCenter(){
@@ -313,7 +319,10 @@ public class Selector implements TouchListener {
 
                 ags.move(total);
             }
+
+
         }
+
     }
 
 
@@ -517,7 +526,7 @@ public void touch(String name, TouchEvent event, float tpf){
             break;
         case SCROLL:
             Vector2f scroll2d = App.getInstance().app.getInputManager().getCursorPosition();
-            if (!App.getInstance().app.screenContainer.scroll(scroll2d).equals( "")) {
+            if (App.getInstance().app.screenContainer.scroll(scroll2d).equals("")) {
 
 
                 if (App.getInstance().app.screenContainer.selectedScreen.equals("uiScreen")) {
